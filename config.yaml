@@ -1,0 +1,17 @@
+credentials:
+  usernames:
+    harley:
+      email: harley@coderpush.com
+      name: Harley Trung
+      password: $2b$12$JS2LBHI.O2ghkgy7Lf7mZ.ekBD9YCiooWZnvFqcSHFnj.2t1oY75S
+    long:
+      email: long@coderpush.com
+      name: Long Vu
+      password: $2b$12$JS2LBHI.O2ghkgy7Lf7mZ.ekBD9YCiooWZnvFqcSHFnj.2t1oY75S
+cookie:
+  expiry_days: 30
+  key: BzdOJIZYhsdEakQXkXec3dCSRe2uI5cD # Must be string
+  name: 74rALcazxy
+preauthorized:
+  emails:
+  - harley@coderpush.com
