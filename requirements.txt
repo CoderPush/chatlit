@@ -1,0 +1,4 @@
+openai==0.27.5
+streamlit==1.22.0
+streamlit_authenticator==0.2.2
+streamlit_chat==0.0.2.2
