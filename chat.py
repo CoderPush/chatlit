@@ -77,6 +77,11 @@ if clear_button:
 
 # generate a response
 def generate_response(prompt):
+    if 'messages' not in st.session_state:
+        st.session_state['messages'] = [
+            {"role": "system", "content": "You are a helpful assistant."}
+        ]
+
     st.session_state['messages'].append({"role": "user", "content": prompt})
 
     completion = openai.ChatCompletion.create(
