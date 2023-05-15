@@ -6,9 +6,8 @@ def init_sidebar(st, db):
     link_button(st.sidebar, "New Chat", "/")
 
     st.sidebar.divider()
-    load_history = st.sidebar.button("Chat History")
-    if load_history:
-        st.session_state["history_items"] = load_history_items(st, db)
+    st.sidebar.write("## Chat History")
+    st.session_state["history_items"] = load_history_items(st, db)
 
 
 def init_chat(st):

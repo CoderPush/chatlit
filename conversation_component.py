@@ -1,11 +1,20 @@
-from utils import link_button
+from utils import link_button, link_row
 
 
 def render_conversations(st, sidebar):
+    cid_from_params = get_cid_from_params(st)
+    st.markdown("""
+        <style>
+            a.link-row:hover div, a.selected div {
+                background-color: #666;
+            }
+        </style>
+    """, unsafe_allow_html=True)
     if "history_items" in st.session_state:
         for (m, title, cid) in st.session_state["history_items"]:
-            link_button(sidebar, f"{m} {title}",
-                        f"?cid={cid}")
+            selected = cid == cid_from_params
+            link_row(sidebar, f"{m} {title}",
+                     f"?cid={cid}", selected=selected)
 
 
 def load_history_items(st, db):
@@ -32,6 +41,15 @@ def load_history_items(st, db):
 
         result.append((m, title, cid))
     return result
+
+
+def get_cid_from_params(st):
+    params = st.experimental_get_query_params()
+    if "cid" in params:
+        cid = params["cid"][0]
+        return cid
+    else:
+        return None
 
 
 def load_conversations(st, db):

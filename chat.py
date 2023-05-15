@@ -1,3 +1,4 @@
+from utils import generate_conversation_title
 import os
 import openai
 import streamlit as st
@@ -29,7 +30,6 @@ counter_placeholder = st.sidebar.empty()
 counter_placeholder.write(
     f"Total cost since page load: ${st.session_state['total_cost']:.5f}")
 
-st.sidebar.divider()
 db = get_firestore_db()
 init_sidebar(st, db)
 
@@ -81,13 +81,18 @@ def generate_response(prompt):
     prompt_tokens = completion.usage.prompt_tokens
     completion_tokens = completion.usage.completion_tokens
 
+    title = st.session_state.get('title') or generate_conversation_title(
+        openai, st.session_state['messages'])
+
     conversation_record = {
         "messages": st.session_state['messages'],
         "usage": completion.usage.to_dict(),
         "model_name": model_name,
+        "title": title
     }
 
-    cid = st.session_state['cid'] if "cid" in st.session_state else None
+    cid = st.session_state.get('cid', None)
+
     # store conversations to firestore
     firestore_save(
         db, cid, conversation_record)
@@ -121,6 +126,7 @@ with container:
 
         st.session_state['cost'] = cost
         st.session_state['total_cost'] += cost
+        st.experimental_rerun()
 
 if st.session_state['generated']:
     with response_container:

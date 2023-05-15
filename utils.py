@@ -12,3 +12,51 @@ def link_button(st, text, path):
         ''',
         unsafe_allow_html=True
     )
+
+
+def link_row(st, text, path, selected=False):
+    if selected:
+        class_name = "selected link-row"
+    else:
+        class_name = "link-row"
+
+    st.write(
+        f'''
+
+        <a target="_self" href="{path}" style="display: block; color: white; text-decoration: none;" class="{class_name}">
+          <div style="width: 100%; height: 100%; transition: background-color 0.3s; padding: 5px;">
+          {text}
+          </div>
+        </a>
+        ''',
+        unsafe_allow_html=True
+    )
+
+
+def generate_conversation_title(openai, messages):
+    user_messages = [m['content'] for m in messages if m['role'] == 'user']
+    conversation = " ".join(user_messages)
+
+    # Generate a prompt for the model
+    prompt = f"""
+    Based on the following user chat messages ---:
+
+    ---
+    {conversation}
+    ---
+
+    A title in 5 words or less for this conversation is:
+    """
+
+    # Use the OpenAI API to generate a response
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        temperature=0.3,
+        max_tokens=60
+    )
+
+    # Extract the generated title
+    title = response['choices'][0]['text'].strip()
+
+    return title
