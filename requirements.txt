@@ -5,3 +5,4 @@ streamlit_chat @ git+https://github.com/harley/st-chat@main#egg=streamlit_chat
 streamlit-oauth
 python-dotenv
 watchdog
+google-cloud-firestore
