@@ -1,11 +1,9 @@
 from conversation_component import load_history_items
+from utils import link_button
 
 
 def init_sidebar(st, db):
-    # write a link to visit ? to reset cid to null
-    new_chat = st.sidebar.button("New Chat")
-    if new_chat:
-        st.sidebar.write("Click [New Tab](?) as a workaround.")
+    link_button(st.sidebar, "New Chat", "/")
 
     st.sidebar.divider()
     load_history = st.sidebar.button("Chat History")

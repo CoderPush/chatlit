@@ -1,26 +1,28 @@
 import os
 import openai
+import streamlit as st
 from streamlit_chat import message
 from authenticator import authenticator_setup
 from sidebar import init_sidebar, init_chat
 from firestore_utils import firestore_save, get_firestore_db
 from conversation_component import render_conversations, load_conversations
 from model_switcher import render_model_switcher
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
 
-import streamlit as st
 
 # Set page title and header
-st.set_page_config(page_title="CoderGPT", page_icon=":robot_face:")
+st.set_page_config(page_title="CoderGPT",
+                   page_icon=":robot_face:", layout="wide")
 st.sidebar.markdown("<h1 style='text-align: center;'>CoderGPT chat.</h1>",
                     unsafe_allow_html=True)
 
 # Set org ID and API key from ENV variables
-openai.organization = os.environ.get("OPENAI_ORG_ID")
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+openai.organization = os.environ["OPENAI_ORG_ID"]
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 authenticator = authenticator_setup(st)
-
-
 init_chat(st)
 
 counter_placeholder = st.sidebar.empty()
@@ -126,7 +128,7 @@ if st.session_state['generated']:
             message(st.session_state["past"][i],
                     is_user=True, key=str(i) + '_user')
             message(st.session_state["generated"][i],
-                    key=str(i), allow_html=True)
+                    key=str(i), allow_html=True, is_table=True)
         st.write(
             f"Model used: {st.session_state['model_name']}; Number of tokens: {st.session_state['total_tokens']}; Cost: ${st.session_state['cost']:.5f}")
         counter_placeholder.write(

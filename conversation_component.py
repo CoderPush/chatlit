@@ -1,13 +1,37 @@
+from utils import link_button
+
 
 def render_conversations(st, sidebar):
     if "history_items" in st.session_state:
-        for conversation_id in st.session_state["history_items"]:
-            sidebar.write(f"[{conversation_id}](?cid={conversation_id})")
+        for (m, title, cid) in st.session_state["history_items"]:
+            link_button(sidebar, f"{m} {title}",
+                        f"?cid={cid}")
 
 
 def load_history_items(st, db):
     collection_ref = db.collection("conversations")
-    return [conversation.id for conversation in collection_ref.stream()]
+    result = []
+    for c in collection_ref.stream():
+        cid = c.id
+        cdict = c.to_dict()
+        if "title" in cdict:
+            title = cdict["title"]
+        else:
+            title = cid
+        if "model_name" in cdict:
+            model_name = cdict["model_name"]
+        else:
+            model_name = "GPT-3.5"
+
+        if model_name == "GPT-3.5":
+            m = "③"
+        elif model_name == "GPT-4":
+            m = "④"
+        else:
+            m = "💬"
+
+        result.append((m, title, cid))
+    return result
 
 
 def load_conversations(st, db):
@@ -37,7 +61,7 @@ def load_conversations(st, db):
                 st.session_state["generated"].append(message["content"])
 
         usage = conversation["usage"]
-        model_name = conversation["model_name"]
+        model_name = conversation.get("model_name", "GPT-3.5")
         total_tokens = usage["total_tokens"]
         prompt_tokens = usage["prompt_tokens"]
         completion_tokens = usage["completion_tokens"]
