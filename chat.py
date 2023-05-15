@@ -9,6 +9,14 @@ st.set_page_config(page_title="CoderGPT", page_icon=":robot_face:")
 st.markdown("<h1 style='text-align: center;'>CoderGPT chat.</h1>",
             unsafe_allow_html=True)
 
+
+# quit if not authenticated
+if "authentication_status" not in st.session_state or not st.session_state["authentication_status"]:
+    # quit
+    st.write("Please log in on the left.")
+    st.stop()
+
+
 # Set org ID and API key from ENV variables
 openai.organization = os.environ.get("OPENAI_ORG_ID")
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -35,15 +43,6 @@ if 'total_cost' not in st.session_state:
 # - resume a past conversation
 # - use openai callback to update the total cost
 # - add user authentication
-
-if st.session_state["authentication_status"]:
-    authenticator.logout('Logout', 'main', key='unique_key')
-    st.write(f'Welcome *{st.session_state["name"]}*')
-elif st.session_state["authentication_status"] is False:
-    st.error('Username/password is incorrect')
-elif st.session_state["authentication_status"] is None:
-    st.warning('Please enter your username and password')
-
 
 # Sidebar - let user choose model, show total cost of current conversation, and let user clear the current conversation
 st.sidebar.title("Sidebar")
