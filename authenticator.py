@@ -1,35 +1,17 @@
-import streamlit_authenticator as stauth
-
-import yaml
-from yaml.loader import SafeLoader
+from google_utils import auth_with_google
 
 # define authenticator_setup function to be called in chat.py
 
 
 def authenticator_setup(st):
-    with open('config.yaml') as file:
-        config = yaml.load(file, Loader=SafeLoader)
+    auth_with_google(st)
 
-    authenticator = stauth.Authenticate(
-        config['credentials'],
-        config['cookie']['name'],
-        config['cookie']['key'],
-        config['cookie']['expiry_days'],
-        config['preauthorized']
-    )
-    name, authentication_status, username = authenticator.login(
-        'Login', 'sidebar')
-
-    st.session_state["authentication_status"] = authentication_status
-    st.session_state["name"] = name
-    st.session_state["username"] = username
-
-    if st.session_state["authentication_status"]:
-        authenticator.logout(f'Logout *{st.session_state["name"]}*', 'sidebar')
+    if st.session_state.get("authentication_status"):
+        logout = st.sidebar.button(f'Logout *{st.session_state["name"]}*')
+        if logout:
+            # clear st.session_state
+            st.session_state.clear()
 
     # stop if not authenticated
-    if not st.session_state["authentication_status"]:
-        st.write("Please log in on the left.")
+    if not st.session_state.get("authentication_status"):
         st.stop()
-
-    return authenticator

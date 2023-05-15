@@ -8,22 +8,21 @@ from sidebar import init_sidebar, init_chat
 from firestore_utils import firestore_save, get_firestore_db
 from conversation_component import render_conversations, load_conversations
 from model_switcher import render_model_switcher
-# Load environment variables from .env file
+
+
 from dotenv import load_dotenv
 load_dotenv()
 
 
 # Set page title and header
-st.set_page_config(page_title="CoderGPT",
+st.set_page_config(page_title="CoderGPT Chat",
                    page_icon=":robot_face:", layout="wide")
-st.sidebar.markdown("<h1 style='text-align: center;'>CoderGPT chat.</h1>",
-                    unsafe_allow_html=True)
 
 # Set org ID and API key from ENV variables
 openai.organization = os.environ["OPENAI_ORG_ID"]
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
-authenticator = authenticator_setup(st)
+authenticator_setup(st)
 init_chat(st)
 
 counter_placeholder = st.sidebar.empty()
