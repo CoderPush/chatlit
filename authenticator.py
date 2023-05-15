@@ -19,11 +19,17 @@ def authenticator_setup(st):
     )
     name, authentication_status, username = authenticator.login(
         'Login', 'sidebar')
+
     st.session_state["authentication_status"] = authentication_status
     st.session_state["name"] = name
     st.session_state["username"] = username
 
     if st.session_state["authentication_status"]:
         authenticator.logout(f'Logout *{st.session_state["name"]}*', 'sidebar')
+
+    # stop if not authenticated
+    if not st.session_state["authentication_status"]:
+        st.write("Please log in on the left.")
+        st.stop()
 
     return authenticator

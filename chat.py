@@ -2,6 +2,7 @@ import os
 import openai
 from streamlit_chat import message
 from authenticator import authenticator_setup
+from sidebar import init_sidebar, init_chat
 
 import streamlit as st
 
@@ -10,72 +11,34 @@ st.set_page_config(page_title="CoderGPT", page_icon=":robot_face:")
 st.markdown("<h1 style='text-align: center;'>CoderGPT chat.</h1>",
             unsafe_allow_html=True)
 
-authenticator = authenticator_setup(st)
-
-# stop if not authenticated
-if not st.session_state["authentication_status"]:
-    st.write("Please log in on the left.")
-    st.stop()
-
-
 # Set org ID and API key from ENV variables
 openai.organization = os.environ.get("OPENAI_ORG_ID")
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-# Initialise session state variables
-if 'generated' not in st.session_state:
-    st.session_state['generated'] = []
-if 'past' not in st.session_state:
-    st.session_state['past'] = []
-if 'messages' not in st.session_state:
-    st.session_state['messages'] = [
-        {"role": "system", "content": "You are a helpful assistant."}
-    ]
-if 'model_name' not in st.session_state:
-    st.session_state['model_name'] = []
-if 'cost' not in st.session_state:
-    st.session_state['cost'] = []
-if 'total_tokens' not in st.session_state:
-    st.session_state['total_tokens'] = []
-if 'total_cost' not in st.session_state:
-    st.session_state['total_cost'] = 0.0
+authenticator = authenticator_setup(st)
+
+init_chat(st)
+
+counter_placeholder = st.sidebar.empty()
+model, model_name = init_sidebar(st, counter_placeholder)
 
 # TODO:
 # - resume a past conversation
 # - use openai callback to update the total cost
 # - add user authentication
 
-# Sidebar - let user choose model, show total cost of current conversation, and let user clear the current conversation
-st.sidebar.title("Sidebar")
-model_name = st.sidebar.radio("Choose a model:", ("GPT-3.5", "GPT-4"))
-counter_placeholder = st.sidebar.empty()
-counter_placeholder.write(
-    f"Total cost of this conversation: ${st.session_state['total_cost']:.5f}")
-clear_button = st.sidebar.button("Clear Conversation", key="clear")
 
-# Map model names to OpenAI model IDs
-if model_name == "GPT-3.5":
-    model = "gpt-3.5-turbo"
-else:
-    model = "gpt-4"
+def get_content(response):
+    # Handle the response from the API
+    if 'choices' in response and len(response['choices']) > 0:
+        choice = response['choices'][0]
+        if 'message' in choice and 'content' in choice['message']:
+            message_content = choice['message']['content']
+            return message_content
 
-# reset everything
-if clear_button:
-    st.session_state['generated'] = []
-    st.session_state['past'] = []
-    st.session_state['messages'] = [
-        {"role": "system", "content": "You are a helpful assistant."}
-    ]
-    st.session_state['number_tokens'] = []
-    st.session_state['model_name'] = []
-    st.session_state['cost'] = []
-    st.session_state['total_cost'] = 0.0
-    st.session_state['total_tokens'] = []
-    counter_placeholder.write(
-        f"Total cost of this conversation: ${st.session_state['total_cost']:.5f}")
+    st.error(f"Error: {str(response)}")
 
 
-# generate a response
 def generate_response(prompt):
     if 'messages' not in st.session_state:
         st.session_state['messages'] = [
@@ -86,13 +49,13 @@ def generate_response(prompt):
 
     completion = openai.ChatCompletion.create(
         model=model,
-        messages=st.session_state['messages']
+        messages=st.session_state['messages'],
     )
-    response = completion.choices[0].message.content
+
+    response = get_content(completion)
     st.session_state['messages'].append(
         {"role": "assistant", "content": response})
 
-    # print(st.session_state['messages'])
     total_tokens = completion.usage.total_tokens
     prompt_tokens = completion.usage.prompt_tokens
     completion_tokens = completion.usage.completion_tokens
