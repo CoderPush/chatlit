@@ -23,4 +23,7 @@ def authenticator_setup(st):
     st.session_state["name"] = name
     st.session_state["username"] = username
 
+    if st.session_state["authentication_status"]:
+        authenticator.logout(f'Logout *{st.session_state["name"]}*', 'sidebar')
+
     return authenticator
