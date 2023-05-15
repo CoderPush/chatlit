@@ -10,9 +10,9 @@ REFRESH_TOKEN_URL = "https://oauth2.googleapis.com/token"
 REVOKE_TOKEN_URL = "https://oauth2.googleapis.com/revoke"
 SCOPE = "openid profile email"
 
-CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
-CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
-REDIRECT_URI = os.environ.get('REDIRECT_URI')
+CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
+CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
+REDIRECT_URI = os.environ['REDIRECT_URI']
 
 
 def auth_with_google(st):
