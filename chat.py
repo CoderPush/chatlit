@@ -1,18 +1,19 @@
 import os
 import openai
-import streamlit as st
 from streamlit_chat import message
-from authenticator import authenticator
+from authenticator import authenticator_setup
+
+import streamlit as st
 
 # Set page title and header
 st.set_page_config(page_title="CoderGPT", page_icon=":robot_face:")
 st.markdown("<h1 style='text-align: center;'>CoderGPT chat.</h1>",
             unsafe_allow_html=True)
 
+authenticator = authenticator_setup(st)
 
-# quit if not authenticated
-if "authentication_status" not in st.session_state or not st.session_state["authentication_status"]:
-    # quit
+# stop if not authenticated
+if not st.session_state["authentication_status"]:
     st.write("Please log in on the left.")
     st.stop()
 

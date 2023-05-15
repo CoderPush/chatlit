@@ -1,11 +1,8 @@
 import streamlit as st
 import streamlit_authenticator as stauth
-from authenticator import authenticator
+from authenticator import authenticator_setup
 
-name, authentication_status, username = authenticator.login('Login', 'sidebar')
-st.session_state["authentication_status"] = authentication_status
-st.session_state["name"] = name
-st.session_state["username"] = username
+authenticator = authenticator_setup(st)
 
 if st.session_state["authentication_status"]:
     authenticator.logout('Logout', 'main', key='unique_key')
