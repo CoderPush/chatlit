@@ -12,7 +12,7 @@ def load_conversation(st):
     return {}
 
 def get_expander_text(st):
-    user = st.session_state.get('name', '')
+    user = st.session_state.get('user_info', {}).get('name', None)
     model = st.session_state.get('model')
     if user:
         text = f"### {model} with {user}"
@@ -27,5 +27,5 @@ def render_body(st):
     conversation = load_conversation(st)
     if conversation:
         render_conversation(st, conversation)
-    render_chat_form(st, conversation)
+    render_chat_form(st)
 

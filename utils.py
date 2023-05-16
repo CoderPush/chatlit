@@ -52,7 +52,7 @@ def generate_conversation_title(openai, messages):
     {conversation}
     ---
 
-    A title in 5 words or less for this conversation is:
+    A title in 5 words or less, without quotation marks, for this conversation is:
     """
 
     # Use the OpenAI API to generate a response
@@ -77,3 +77,7 @@ def get_key_from_params(st, key):
 
 def get_cid_from_params(st):
     return get_key_from_params(st, 'cid')
+
+def get_oauth_uid(st):
+    user_info = st.session_state.get('user_info', {})
+    return user_info.get('id', None)

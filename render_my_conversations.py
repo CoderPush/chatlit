@@ -1,5 +1,5 @@
 from firestore_utils import get_firestore_db
-from utils import button_row, get_cid_from_params
+from utils import button_row, get_cid_from_params, get_oauth_uid
 
 def hack_css(sidebar):
     sidebar.markdown("""
@@ -18,10 +18,14 @@ def hack_css(sidebar):
 def render_my_conversations(st, sidebar):
     hack_css(sidebar)
     db = get_firestore_db()
-    # TODO: load only conversations that belong to the user
-    conversations = db.collection("conversations").stream()
-
+    uid = get_oauth_uid(st)
     cid_from_params = get_cid_from_params(st)
+
+    if uid:
+        # load only conversations that belong to the user
+        conversations = db.collection("conversations").where("uid", "==", uid).stream()
+    else:
+        conversations = []
 
     for c in conversations:
       selected = c.id == cid_from_params

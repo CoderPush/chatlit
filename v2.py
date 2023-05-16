@@ -67,11 +67,9 @@ if __name__ == "__main__":
 
     with st.expander("Debug"):
         col1, col2 = st.columns(2)
-        col1.write("Session State")
-        col1.write(st.session_state)
-        try:
-            usage = st.session_state['conversation']['usage']
-        except:
-            usage = {}
-        col2.write("Usage")
-        col2.write(usage)
+        col1.write("Session State (w/o conversation, user_info))")
+        # exclude conversation from session_state
+        session_state = {k: v for k, v in st.session_state.items() if k != 'conversation' and k != 'user_info'}
+        col1.write(session_state)
+        col2.write("Conversation")
+        col2.write(st.session_state.get('conversation'))
