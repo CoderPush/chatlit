@@ -27,5 +27,9 @@ def render_body(st):
     conversation = load_conversation(st)
     if conversation:
         render_conversation(st, conversation)
-    render_chat_form(st)
+
+    if st.session_state.get('user_info'):
+        render_chat_form(st)
+    else:
+        st.write("Please sign in to use")
 

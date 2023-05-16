@@ -22,10 +22,14 @@ def get_content(st, response):
     st.error(f"Error: {str(response)}")
 
 
-def generate_response(st, prompt, model):
+def generate_response(st, prompt):
+    model = st.session_state['model']
     messages = load_messages(st)
     messages.append({"role": "user", "content": prompt})
 
+    print("openai.ChatCompletion.create with")
+    print("model: ", model)
+    print("messages: ", messages)
     completion = openai.ChatCompletion.create(
         model=model,
         messages=messages,
@@ -34,13 +38,15 @@ def generate_response(st, prompt, model):
     response = get_content(st, completion)
     messages.append({"role": "assistant", "content": response})
 
+    print("generate_response -> completion: ", completion)
     usage = completion.usage.to_dict()
 
     return messages, usage
 
-def save_to_firestore(st, messages, usage, model):
-    conversation = st.session_state.get('conversation', {})
-    if conversation and len(messages) > 0:
+def save_to_firestore(st, messages, usage):
+    model = st.session_state['model']
+    if len(messages) > 0:
+        conversation = st.session_state.get('conversation', {})
         title = conversation.get("title", None)
         if title is None:
             title = generate_conversation_title(openai, messages)
@@ -59,6 +65,7 @@ def save_to_firestore(st, messages, usage, model):
 
         # store conversations to firestore
         new_conversation = firestore_save(cid, conversation_record)
+        print(new_conversation)
         return new_conversation
 
 def render_chat_form(st):
@@ -70,8 +77,9 @@ def render_chat_form(st):
         submit_button = st.form_submit_button(label='Send')
 
     if submit_button and user_input:
-        messages, usage = generate_response(st, user_input, model)
-        new_conversation = save_to_firestore(st, messages, usage, model)
-        st.experimental_set_query_params(cid=new_conversation.id)
+        messages, usage = generate_response(st, user_input)
+        new_conversation = save_to_firestore(st, messages, usage)
+        if new_conversation is not None:
+            st.experimental_set_query_params(cid=new_conversation.id)
         st.experimental_rerun()
 

@@ -22,8 +22,8 @@ def render_my_conversations(st, sidebar):
     cid_from_params = get_cid_from_params(st)
 
     if uid:
-        # load only conversations that belong to the user
-        conversations = db.collection("conversations").where("uid", "==", uid).stream()
+        # load only conversations that belong to the user, newest first
+        conversations = db.collection("conversations").where("uid", "==", uid).order_by("created", direction="DESCENDING").stream()
     else:
         conversations = []
 
