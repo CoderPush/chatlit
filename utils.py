@@ -60,3 +60,12 @@ def generate_conversation_title(openai, messages):
     title = response['choices'][0]['text'].strip()
 
     return title
+
+def get_cid_from_params(st):
+    params = st.experimental_get_query_params()
+    if "cid" in params:
+        cid = params["cid"][0]
+        return cid
+    else:
+        return None
+

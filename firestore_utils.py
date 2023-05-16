@@ -2,15 +2,17 @@ from google.cloud import firestore
 import os
 import base64
 import json
+import streamlit as st
 
-
+@st.cache_resource
 def get_firestore_db():
     json_content = decode_firestore_credentials()
     db = firestore.Client.from_service_account_info(json_content)
     return db
 
 
-def firestore_save(db, cid, conversation_record):
+def firestore_save(cid, conversation_record):
+    db = get_firestore_db()
     if cid:
         # get conversation fromm cid
         conversation = db.collection("conversations").document(cid).get()

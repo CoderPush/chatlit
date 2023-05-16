@@ -28,6 +28,7 @@ def auth_with_google(st):
         # If not, show authorize button
         result = oauth2.authorize_button(
             "Sign in with Google", REDIRECT_URI, SCOPE)
+        st.sidebar.write("result: ", result)
         if result and 'token' in result:
             # If authorization successful, save token in session state
             st.session_state['token'] = result.get('token')
@@ -46,6 +47,7 @@ def auth_with_google(st):
 def update_authentication_status(st):
     token = st.session_state.get('token')
     if not token:
+        st.experimental_show(st.session_state)
         return
 
     access_token = token.get('access_token')
@@ -58,6 +60,7 @@ def update_authentication_status(st):
         st.session_state["user_info"] = user_info
     else:
         st.error("Failed to get user info.")
+        st.session_state["authentication_status"] = False
 
 
 def get_user_info(access_token):
