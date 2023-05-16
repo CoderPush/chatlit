@@ -10,6 +10,10 @@ def get_firestore_db():
     db = firestore.Client.from_service_account_info(json_content)
     return db
 
+def load_conversation_by_id(cid):
+    db = get_firestore_db()
+    return db.collection("conversations").document(cid).get()
+
 
 def firestore_save(cid, conversation_record):
     db = get_firestore_db()
@@ -18,9 +22,12 @@ def firestore_save(cid, conversation_record):
         conversation = db.collection("conversations").document(cid).get()
         # update conversation with the new messages and usage value
         conversation.reference.update(conversation_record)
+        return conversation
     else:
         collection_ref = db.collection("conversations")
-        collection_ref.add(conversation_record)
+        # q: what does collection_ref.add(conversation_record) return and how do i get the id from the new record?
+        _, record = collection_ref.add(conversation_record)
+        return record
 
 
 def decode_firestore_credentials():

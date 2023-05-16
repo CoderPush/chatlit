@@ -9,15 +9,13 @@ def load_conversation(st):
         db = get_firestore_db()
         return db.collection("conversations").document(cid).get().to_dict()
 
+    return {}
+
 
 def render_body(st):
+    st.write("## {0}".format(st.session_state['model']))
     conversation = load_conversation(st)
-
-    if conversation is None:
-        st.write("Invalid conversation ID. Start a [New Chat](?)")
-        st.stop()
-        return 
-
-    render_conversation(st, conversation)
+    if conversation:
+        render_conversation(st, conversation)
     render_chat_form(st, conversation)
 

@@ -48,8 +48,8 @@ def generate_response(st, conversation, prompt, model):
     cid = st.session_state.get('cid', None)
 
     # store conversations to firestore
-    firestore_save(cid, conversation_record)
-    return response, usage
+    new_conversation = firestore_save(cid, conversation_record)
+    return new_conversation, response, usage
 
 
 
@@ -61,9 +61,8 @@ def render_chat_form(st, conversation):
         user_input = st.text_area(f"{name}:", key='input', height=50)
         submit_button = st.form_submit_button(label='Send')
 
-    st.experimental_show(conversation)
     if submit_button and user_input:
-        output, usage = generate_response(st, conversation, user_input, model)
-        st.experimental_show(output, usage) 
+        new_conversation, output, usage = generate_response(st, conversation, user_input, model)
+        st.experimental_set_query_params(cid=new_conversation.id)
         st.experimental_rerun()
 

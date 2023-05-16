@@ -8,41 +8,61 @@ load_dotenv()
 
 from render_conversation import render_conversation
 from render_my_conversations import render_my_conversations
-from render_chat_form import render_chat_form
 from render_body import render_body
+from utils import get_key_from_params
+from firestore_utils import load_conversation_by_id
 
-def init_values():
+def controller():
     openai.organization = os.environ["OPENAI_ORG_ID"]
     openai.api_key = os.environ["OPENAI_API_KEY"]
     st.session_state['total_cost'] = 0.0
-    st.session_state['model'] = "gpt-3.5-turbo"
+    st.session_state['model'] = get_key_from_params(st, 'model') or 'gpt-3.5-turbo'
+    cid = get_key_from_params(st, 'cid')
+    if cid:
+        st.session_state['cid'] = cid
+        conversation = load_conversation_by_id(cid)
+        st.session_state['conversation'] = conversation.to_dict()
+
 
 def render_new_chat(sidebar):
-    link_button(sidebar, "New Chat", "/")
+    # link_button(sidebar, "New GPT-3.5 Chat", "?model=gpt-3.5-turbo")
+    # link_button(sidebar, "New GPT-4 Chat", "?model=gpt-4")
+    b1 = sidebar.button("GPT-3.5 Chat", key="button_gpt-3.5-turbo", use_container_width=True)
+    b2 = sidebar.button("GPT-4 Chat", key="button_gpt-4", use_container_width=True)
+    if b1:
+        st.experimental_set_query_params(model="gpt-3.5-turbo")
+        st.experimental_rerun()
+    if b2:
+        st.experimental_set_query_params(model="gpt-4")
+        st.experimental_rerun()
 
 
 def render_history_menu(sidebar):
     sidebar.write("## Chat History")
+    sidebar.markdown("""
+        <style>
+            a.link-row:hover div, a.selected div {
+                background-color: #666;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
     render_my_conversations(st, sidebar)
 
-def render_total_cost(sidebar):
-    counter_placeholder = st.sidebar.empty()
-    if 'total_cost' in st.session_state:
-        counter_placeholder.write(
-        f"Total cost since page load: ${st.session_state.total_cost:.5f}")
 
 def render_sidebar(sidebar):
     render_new_chat(sidebar)
-    render_total_cost(sidebar)
     sidebar.divider()
     render_history_menu(sidebar)
 
 def main():
     st.set_page_config(page_title="CoderGPT Chat",
                     page_icon=":robot_face:", layout="wide")
-    init_values()
+    controller()
     render_sidebar(st.sidebar)
     render_body(st)
 
 if __name__ == "__main__":
     main()
+
+    st.session_state
