@@ -10,6 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 - Python 3.10
 - Google account for authentication
+- pipenv
 
 ### Setup
 
@@ -23,7 +24,7 @@ These instructions will get you a copy of the project up and running on your loc
 2. Install dependencies:
 
     ```bash
-    pip install -r requirements.txt
+    pipenv install
     ```
 
 ### Running Locally
