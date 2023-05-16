@@ -25,10 +25,8 @@ def controller():
 
 
 def render_new_chat(sidebar):
-    # link_button(sidebar, "New GPT-3.5 Chat", "?model=gpt-3.5-turbo")
-    # link_button(sidebar, "New GPT-4 Chat", "?model=gpt-4")
-    b1 = sidebar.button("GPT-3.5 Chat", key="button_gpt-3.5-turbo", use_container_width=True)
-    b2 = sidebar.button("GPT-4 Chat", key="button_gpt-4", use_container_width=True)
+    b1 = sidebar.button("GPT-3.5 Chat", key="button_gpt-3.5-turbo", use_container_width=True, type='primary')
+    b2 = sidebar.button("GPT-4 Chat", key="button_gpt-4", use_container_width=True, type='primary')
     if b1:
         st.experimental_set_query_params(model="gpt-3.5-turbo")
         st.experimental_rerun()
@@ -65,4 +63,13 @@ def main():
 if __name__ == "__main__":
     main()
 
-    st.session_state
+    with st.expander("Debug"):
+        col1, col2 = st.columns(2)
+        col1.write("Session State")
+        col1.write(st.session_state)
+        try:
+            usage = st.session_state['conversation']['usage']
+        except:
+            usage = {}
+        col2.write("Usage")
+        col2.write(usage)
