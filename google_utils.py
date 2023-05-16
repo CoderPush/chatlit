@@ -2,6 +2,9 @@ import requests
 import os
 from streamlit_oauth import OAuth2Component
 
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Set environment variables
 AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -39,16 +42,22 @@ def auth_with_google(st):
             st.session_state.token = token
             st.experimental_rerun()
 
-        access_token = token.get('access_token')
-        if access_token:
-            user_info = get_user_info(access_token)
 
-        if user_info:
-            st.session_state["authentication_status"] = True
-            st.session_state["name"] = user_info["name"]
-            st.session_state["user_info"] = user_info
-        else:
-            st.error("Failed to get user info.")
+def update_authentication_status(st):
+    token = st.session_state.get('token')
+    if not token:
+        return
+
+    access_token = token.get('access_token')
+    if access_token:
+        user_info = get_user_info(access_token)
+
+    if user_info:
+        st.session_state["authentication_status"] = True
+        st.session_state["name"] = user_info["name"]
+        st.session_state["user_info"] = user_info
+    else:
+        st.error("Failed to get user info.")
 
 
 def get_user_info(access_token):
