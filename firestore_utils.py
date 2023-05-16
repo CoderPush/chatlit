@@ -26,6 +26,8 @@ def firestore_save(cid, conversation_record):
     else:
         collection_ref = db.collection("conversations")
         # q: what does collection_ref.add(conversation_record) return and how do i get the id from the new record?
+        # set created in conversation_record
+        conversation_record["created"] = firestore.SERVER_TIMESTAMP
         _, record = collection_ref.add(conversation_record)
         return record
 

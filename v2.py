@@ -30,6 +30,8 @@ def controller():
         if model_from_conversation:
             st.session_state['model'] = model_from_conversation
 
+    if 'model' not in st.session_state:
+        st.session_state['model'] = 'gpt-3.5-turbo'
 
 
 def render_new_chat(sidebar):
