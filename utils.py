@@ -32,6 +32,13 @@ def link_row(st, text, path, selected=False):
         unsafe_allow_html=True
     )
 
+def button_row(st, cid, conversation, selected=False):
+    title = conversation.get('title', cid)
+    button = st.sidebar.button(title, key=f'button_{cid}', disabled=selected, use_container_width=True)
+    if button:
+        st.experimental_set_query_params(cid=cid)
+        st.experimental_rerun()
+
 
 def generate_conversation_title(openai, messages):
     user_messages = [m['content'] for m in messages if m['role'] == 'user']
@@ -45,7 +52,7 @@ def generate_conversation_title(openai, messages):
     {conversation}
     ---
 
-    A title in 5 words or less for this conversation is:
+    A title in 5 words or less, without quotation marks, for this conversation is:
     """
 
     # Use the OpenAI API to generate a response
@@ -60,3 +67,17 @@ def generate_conversation_title(openai, messages):
     title = response['choices'][0]['text'].strip()
 
     return title
+
+def get_key_from_params(st, key):
+    params = st.experimental_get_query_params()
+    if key in params:
+        return params[key][0]
+    else:
+        return None
+
+def get_cid_from_params(st):
+    return get_key_from_params(st, 'cid')
+
+def get_oauth_uid(st):
+    user_info = st.session_state.get('user_info', {})
+    return user_info.get('id', None)
