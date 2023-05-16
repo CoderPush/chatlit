@@ -11,9 +11,19 @@ def load_conversation(st):
 
     return {}
 
+def get_expander_text(st):
+    user = st.session_state.get('name', '')
+    model = st.session_state.get('model')
+    if user:
+        text = f"### {model} with {user}"
+    else:
+        text = f"### {model}"
+    return text
 
 def render_body(st):
-    st.write("## {0}".format(st.session_state['model']))
+    with st.expander(get_expander_text(st)):
+        st.write(st.session_state.get('user_info'))
+
     conversation = load_conversation(st)
     if conversation:
         render_conversation(st, conversation)

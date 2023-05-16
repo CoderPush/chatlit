@@ -9,6 +9,7 @@ load_dotenv()
 from render_conversation import render_conversation
 from render_my_conversations import render_my_conversations
 from render_body import render_body
+from render_auth import render_auth
 from utils import get_key_from_params
 from firestore_utils import load_conversation_by_id
 
@@ -50,6 +51,7 @@ def render_history_menu(sidebar):
 
 def render_sidebar(sidebar):
     render_new_chat(sidebar)
+    render_auth(st)
     sidebar.divider()
     render_history_menu(sidebar)
 
