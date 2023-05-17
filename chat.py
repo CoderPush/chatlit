@@ -3,19 +3,13 @@ from utils import get_key_from_params
 from render_auth import render_auth
 from render_body import render_body
 from render_my_conversations import render_my_conversations
-from render_conversation import render_conversation
-import os
-import openai
 import streamlit as st
-from utils import link_button
 
 from dotenv import load_dotenv
 load_dotenv()
 
 
 def controller():
-    openai.organization = os.environ["OPENAI_ORG_ID"]
-    openai.api_key = os.environ["OPENAI_API_KEY"]
     st.session_state['total_cost'] = 0.0
     model_from_param = get_key_from_params(st, 'model')
     if model_from_param:

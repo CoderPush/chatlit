@@ -73,8 +73,8 @@ def render_chat_form(st):
     model = st.session_state['model']
 
     with st.form(key='my_form', clear_on_submit=True):
-        user_input = st.text_area(f"{name}:", key='text_area', height=20)
-        submit_button = st.form_submit_button(label='Send')
+        user_input = st.text_area(f"{name}:", key='text_area', height=20, label_visibility='collapsed')
+        submit_button = st.form_submit_button(label='Submit')
 
     if submit_button and user_input:
         messages, usage = generate_response(st, user_input)
