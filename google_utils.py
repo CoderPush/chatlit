@@ -36,11 +36,11 @@ def auth_with_google(st):
         # If token exists in session state, show the token
         token = st.session_state['token']
 
-        if st.sidebar.button("Refresh Token"):
+        # if st.sidebar.button("Refresh Token"):
             # If refresh token button is clicked, refresh the token
-            token = oauth2.refresh_token(token)
-            st.session_state.token = token
-            st.experimental_rerun()
+            # token = oauth2.refresh_token(token)
+            # st.session_state.token = token
+            # st.experimental_rerun()
 
 
 def update_authentication_status(st):
