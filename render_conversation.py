@@ -4,9 +4,10 @@ from streamlit_chat import message as chat_message
 
 
 def render_messages(st, messages):
+    user_picture_url = st.session_state.get("user_info", {}).get("picture", None)
     for i, message in enumerate(messages):
         if message.get("role") == "user":
-            chat_message(message.get("content"), key=str(i) + "_user", is_user=True)
+            chat_message(message.get("content"), key=str(i) + "_user", is_user=True, logo=user_picture_url)
         elif message.get("role") == "assistant":
             chat_message(
                 message.get("content"),
