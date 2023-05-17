@@ -26,6 +26,6 @@ jobs:
           application_name: ${{ secrets.BEANSTALK_APP_NAME }}
           environment_name: ${{ secrets.BEANSTALK_ENV_NAME }}
           version_label: ${{ github.sha }}
-          region: ${{ secrets.AWS_REGION }}}
+          region: ${{ secrets.AWS_REGION }}
           deployment_package: chatlit.zip
           existing_bucket_name: ${{ secrets.BEANSTALK_BUCKET_NAME }}
