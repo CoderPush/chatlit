@@ -11,6 +11,7 @@ watchdog = "*"
 google-cloud-firestore = "*"
 firebase-admin = "*"
 streamlit-chat = {editable = true, git = "https://github.com/harley/st-chat.git"}
+streamlit-oauth = "*"
 
 [dev-packages]
 pre-commit = "*"
