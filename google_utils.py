@@ -1,6 +1,7 @@
 import requests
 import os
 from streamlit_oauth import OAuth2Component
+from firebase_utils import create_user_in_firebase_if_not_exists
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -51,6 +52,7 @@ def update_authentication_status(st):
             user_info = get_user_info(access_token)
 
         if user_info:
+            create_user_in_firebase_if_not_exists(user_info)
             st.session_state["authentication_status"] = "Authenticated"
             st.session_state["name"] = user_info["name"]
             st.session_state["user_info"] = user_info
