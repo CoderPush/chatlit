@@ -11,6 +11,7 @@ streamlit-oauth = "*"
 python-dotenv = "*"
 watchdog = "*"
 google-cloud-firestore = "*"
+firebase-admin = "*"
 
 [dev-packages]
 

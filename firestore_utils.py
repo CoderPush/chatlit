@@ -11,8 +11,9 @@ def get_firestore_db():
     return db
 
 def load_conversation_by_id(cid):
-    db = get_firestore_db()
-    return db.collection("conversations").document(cid).get()
+    if cid and len(cid) > 0:
+        db = get_firestore_db()
+        return db.collection("conversations").document(cid).get()
 
 
 def firestore_save(cid, conversation_record):
