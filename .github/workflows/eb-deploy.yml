@@ -1,0 +1,31 @@
+name: Deploy Backend to Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main
+      - beanstalk-deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+
+      - name: Zip the application
+        run: |
+          zip -r chatlit.zip * .[^.]* -x "*.git*" -x "__pycache__"
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ secrets.BEANSTALK_APP_NAME }}}
+          environment_name: ${{ secrets.BEANSTALK_ENV_NAME }}
+          version_label: ${{ github.sha }}
+          region: ${{ secrets.AWS_REGION }}}
+          deployment_package: chatlit.zip
+          existing_bucket_name: ${{ secrets.BEANSTALK_BUCKET_NAME }}
