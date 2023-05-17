@@ -6,12 +6,11 @@ name = "pypi"
 [packages]
 openai = "==0.27.5"
 streamlit = "==1.22.0"
-streamlit-chat = {ref = "main", git = "https://github.com/harley/st-chat"}
-streamlit-oauth = "*"
 python-dotenv = "*"
 watchdog = "*"
 google-cloud-firestore = "*"
 firebase-admin = "*"
+streamlit-chat = {editable = true, git = "https://github.com/harley/st-chat.git"}
 
 [dev-packages]
 pre-commit = "*"
