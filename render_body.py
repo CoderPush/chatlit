@@ -31,5 +31,8 @@ def render_body(st):
     if st.session_state.get('user_info'):
         render_chat_form(st)
     else:
-        st.write("Please sign in to use")
+        # load homepage.md into a string
+        with open("content/overview.md", "r") as f:
+            overview = f.read()
+            st.write(overview)
 
