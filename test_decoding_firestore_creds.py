@@ -1,6 +1,7 @@
 import os
 import base64
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # function to encode json to base64 string
@@ -8,7 +9,7 @@ load_dotenv()
 
 def encode_firestore_credentials():
     # open json file
-    with open('firestore-key.json') as f:
+    with open("firestore-key.json") as f:
         data = f.read()
     # encode json to base64 string
     encoded = base64.b64encode(data.encode("utf-8"))
@@ -16,7 +17,7 @@ def encode_firestore_credentials():
 
 
 def decode_firestore_credentials():
-    raw = os.environ['FIRESTORE_CREDENTIALS_BASE64']
+    raw = os.environ["FIRESTORE_CREDENTIALS_BASE64"]
     # decode base64 string to json
     firebase_credentials = base64.b64decode(raw).decode("utf-8")
     print(firebase_credentials)

@@ -7,7 +7,7 @@ collection_ref = db.collection("conversations")
 cid = "ZwpCs09yX28DdSlLjLLX"
 conversation = collection_ref.document(cid).get().to_dict()
 # display conversation
-print(conversation['messages'])
+print(conversation["messages"])
 
 # Usage: python test_load_conversations.py
 # ❯ python test_load_conversations.py
