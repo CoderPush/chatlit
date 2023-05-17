@@ -54,8 +54,7 @@ def generate_conversation_title(openai, messages):
     {conversation}
     ---
 
-    A title in 5 words or less, without quotation marks, for this conversation is:
-    """
+    A title in 5 words or less, without quotes, for this conversation is: """
 
     # Use the OpenAI API to generate a response
     response = openai.Completion.create(
@@ -64,6 +63,8 @@ def generate_conversation_title(openai, messages):
 
     # Extract the generated title
     title = response["choices"][0]["text"].strip()
+    # remove surrounding quotes
+    title = title.replace('"', "")
 
     return title
 

@@ -52,6 +52,9 @@ def render_new_chat(sidebar):
     button_models = {"GPT-3.5 Chat": "gpt-3.5-turbo", "GPT-4 Chat": "gpt-4"}
 
     for button_text, model_type in button_models.items():
+        # if model in session_state is the same as the button, prefix button_text with a checked emoji
+        if st.session_state.get("model") == model_type:
+            button_text = "✓ " + button_text
         if sidebar.button(
             button_text,
             key=f"button_{model_type}",
