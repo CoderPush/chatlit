@@ -11,6 +11,7 @@ def hack_css(sidebar):
             }
             button[kind='primary'] {
                 background-color: inherit;
+                color: inherit;
             }
         </style>
     """, unsafe_allow_html=True)
