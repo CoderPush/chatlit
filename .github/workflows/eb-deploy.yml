@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - beanstalk-deploy
 
 jobs:
   deploy:
