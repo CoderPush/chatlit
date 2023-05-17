@@ -38,3 +38,10 @@ def decode_firestore_credentials():
     firebase_credentials = base64.b64decode(raw).decode("utf-8")
     json_data = json.loads(firebase_credentials)
     return json_data
+
+def clear_user_history(uid):
+    # delete all conversations that belong to the user
+    db = get_firestore_db()
+    conversations = db.collection("conversations").where("uid", "==", uid).stream()
+    for c in conversations:
+        c.reference.delete()

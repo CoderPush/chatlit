@@ -81,3 +81,4 @@ def get_cid_from_params(st):
 def get_oauth_uid(st):
     user_info = st.session_state.get('user_info', {})
     return user_info.get('id', None)
+
