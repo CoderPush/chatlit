@@ -2,28 +2,27 @@ import openai
 from firestore_utils import firestore_save
 from utils import generate_conversation_title, get_oauth_uid
 
-def load_messages(st):
-    conversation = st.session_state.get('conversation', {})
-    default = [
-        {"role": "system", "content": "You are a helpful assistant."}
-    ]
 
-    return conversation.get('messages', default)
+def load_messages(st):
+    conversation = st.session_state.get("conversation", {})
+    default = [{"role": "system", "content": "You are a helpful assistant."}]
+
+    return conversation.get("messages", default)
 
 
 def get_content(st, response):
     # Handle the response from the API
-    if 'choices' in response and len(response['choices']) > 0:
-        choice = response['choices'][0]
-        if 'message' in choice and 'content' in choice['message']:
-            message_content = choice['message']['content']
+    if "choices" in response and len(response["choices"]) > 0:
+        choice = response["choices"][0]
+        if "message" in choice and "content" in choice["message"]:
+            message_content = choice["message"]["content"]
             return message_content
 
     st.error(f"Error: {str(response)}")
 
 
 def generate_response(st, prompt):
-    model = st.session_state['model']
+    model = st.session_state["model"]
     messages = load_messages(st)
     messages.append({"role": "user", "content": prompt})
 
@@ -43,10 +42,11 @@ def generate_response(st, prompt):
 
     return messages, usage
 
+
 def save_to_firestore(st, messages, usage):
-    model = st.session_state['model']
+    model = st.session_state["model"]
     if len(messages) > 0:
-        conversation = st.session_state.get('conversation', {})
+        conversation = st.session_state.get("conversation", {})
         title = conversation.get("title", None)
         if title is None:
             title = generate_conversation_title(openai, messages)
@@ -58,23 +58,26 @@ def save_to_firestore(st, messages, usage):
             "usage": usage,
             "model_name": model,
             "title": title,
-            "uid": uid
+            "uid": uid,
         }
 
-        cid = st.session_state.get('cid', None)
+        cid = st.session_state.get("cid", None)
 
         # store conversations to firestore
         new_conversation = firestore_save(cid, conversation_record)
         print(new_conversation)
         return new_conversation
 
-def render_chat_form(st):
-    name = st.session_state.get('user_info', {}).get('name', 'You')
-    model = st.session_state['model']
 
-    with st.form(key='my_form', clear_on_submit=True):
-        user_input = st.text_area(f"{name}:", key='text_area', height=20, label_visibility='collapsed')
-        submit_button = st.form_submit_button(label='Submit')
+def render_chat_form(st):
+    name = st.session_state.get("user_info", {}).get("name", "You")
+    model = st.session_state["model"]
+
+    with st.form(key="my_form", clear_on_submit=True):
+        user_input = st.text_area(
+            f"{name}:", key="text_area", height=20, label_visibility="collapsed"
+        )
+        submit_button = st.form_submit_button(label="Submit")
 
     if submit_button and user_input:
         messages, usage = generate_response(st, user_input)
@@ -82,4 +85,3 @@ def render_chat_form(st):
         if new_conversation is not None:
             st.experimental_set_query_params(cid=new_conversation.id)
         st.experimental_rerun()
-

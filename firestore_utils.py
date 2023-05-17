@@ -4,11 +4,13 @@ import base64
 import json
 import streamlit as st
 
+
 @st.cache_resource
 def get_firestore_db():
     json_content = decode_firestore_credentials()
     db = firestore.Client.from_service_account_info(json_content)
     return db
+
 
 def load_conversation_by_id(cid):
     if cid and len(cid) > 0:
@@ -34,11 +36,12 @@ def firestore_save(cid, conversation_record):
 
 
 def decode_firestore_credentials():
-    raw = os.environ['FIRESTORE_CREDENTIALS_BASE64']
+    raw = os.environ["FIRESTORE_CREDENTIALS_BASE64"]
     # decode base64 string to json
     firebase_credentials = base64.b64decode(raw).decode("utf-8")
     json_data = json.loads(firebase_credentials)
     return json_data
+
 
 def clear_user_history(uid):
     # delete all conversations that belong to the user
