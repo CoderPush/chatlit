@@ -1,2 +1,7 @@
 [browser]
 gatherUsageStats = false
+serverAddress = "0.0.0.0"
+
+[server]
+enableCORS = false
+port = 80
