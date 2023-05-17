@@ -14,6 +14,7 @@ google-cloud-firestore = "*"
 firebase-admin = "*"
 
 [dev-packages]
+pre-commit = "*"
 
 [requires]
 python_version = "3.10"
