@@ -4,6 +4,7 @@ from render_auth import render_auth
 from render_body import render_body
 from render_my_conversations import render_my_conversations
 import streamlit as st
+from firestore_utils import clear_user_history
 
 from dotenv import load_dotenv
 
@@ -29,6 +30,7 @@ def load_and_store_conversation(st, cid: str):
 def controller():
     # TODO: display useful total cost in $
     st.session_state["total_cost"] = 0.0
+    st.session_state["conversation_expanded"] = True
 
     # set model in session if specified in params
     model_from_param = get_key_from_params(st, "model")
@@ -88,9 +90,36 @@ def render_history_menu(sidebar):
     render_my_conversations(st, sidebar)
 
 
+def render_profile(sidebar):
+    user_info = st.session_state.get("user_info")
+    if not user_info:
+        return
+
+    status = f"Signed in as {user_info.get('email')}"
+    with sidebar.expander(status):
+        st.image(user_info.get("picture"), width=50)
+        signout = st.button("Sign out", key="button_signout", type="primary")
+        if signout:
+            st.session_state.clear()
+            st.experimental_rerun()
+        st.write(
+            "While it's useful to resume past conversations, sometimes you may want to clear your chat history."
+        )
+        placeholder = st.empty()
+        with placeholder:
+            clear_history = st.button(
+                "Clear History", key="button_clear_history", type="primary"
+            )
+        if clear_history:
+            clear_user_history(user_info["id"])
+            placeholder.info("Chat history cleared", icon="✅")
+            st.snow()
+
+
 def render_sidebar(sidebar):
     render_new_chat(sidebar)
     render_auth(st)
+    render_profile(sidebar)
     sidebar.divider()
     render_history_menu(sidebar)
 

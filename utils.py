@@ -84,3 +84,18 @@ def get_cid_from_params(st):
 def get_oauth_uid(st):
     user_info = st.session_state.get("user_info", {})
     return user_info.get("id", None)
+
+
+def get_expander_text(st):
+    user = st.session_state.get("user_info", {}).get("name", None)
+    model = st.session_state.get("model")
+    messages = st.session_state.get("conversation", {}).get("messages", [])
+    user_messages = [m for m in messages if m.get("role") == "user"]
+    if user:
+        text = f"### {model} with {user}"
+    else:
+        text = f"### {model}"
+
+    if len(messages) > 0:
+        text += f" ({len(user_messages)} messages)"
+    return text

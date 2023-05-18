@@ -1,13 +1,21 @@
 import openai
 from firestore_utils import firestore_save
 from utils import generate_conversation_title, get_oauth_uid
+import time
 
 
-def load_messages(st):
+def extract_messages(st):
+    default = [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant. Please use concise language to save bandwidth and token usage. Avoid 'AI language model' disclaimer whenever possible.",
+        }
+    ]
+
     conversation = st.session_state.get("conversation", {})
-    default = [{"role": "system", "content": "You are a helpful assistant."}]
+    messages = conversation.get("messages", default)
 
-    return conversation.get("messages", default)
+    return messages
 
 
 def get_content(st, response):
@@ -23,7 +31,7 @@ def get_content(st, response):
 
 def generate_response(st, prompt):
     model = st.session_state["model"]
-    messages = load_messages(st)
+    messages = extract_messages(st)
     messages.append({"role": "user", "content": prompt})
 
     print("openai.ChatCompletion.create with")
@@ -69,6 +77,7 @@ def save_to_firestore(st, messages, usage=None):
         return new_conversation
 
 
+# non-streaming version, with usage
 def render_chat_form(st):
     name = st.session_state.get("user_info", {}).get("name", "You")
     model = st.session_state["model"]
@@ -86,10 +95,11 @@ def render_chat_form(st):
             st.experimental_set_query_params(cid=new_conversation.id)
         st.experimental_rerun()
 
+
 # see sample-stream.json to know how to parse it
 def generate_stream(st, holder, user_input):
     model = st.session_state["model"]
-    messages = load_messages(st)
+    messages = extract_messages(st)
     messages.append({"role": "user", "content": user_input})
 
     print("openai.ChatCompletion.create with", model, messages)
@@ -117,12 +127,13 @@ def generate_stream(st, holder, user_input):
     # }
 
     # middle chunks are content:
-    content = ""
-    for chunk in completion:
-        delta = chunk["choices"][0]["delta"]
-        if "content" in delta:
-            content += delta["content"]
-            holder.markdown(content)
+    with holder.container():
+        content = ""
+        for chunk in completion:
+            delta = chunk["choices"][0]["delta"]
+            if "content" in delta:
+                content += delta["content"]
+                holder.markdown(content)
 
     # last chunk should be
     # {
@@ -148,20 +159,18 @@ def generate_stream(st, holder, user_input):
 
 
 def render_chat_stream(st):
-    name = st.session_state.get("user_info", {}).get("name", "You")
-
     with st.form(key="chat_prompt", clear_on_submit=True):
-        holder = st.empty()
+        stream_holder = st.empty()
         user_input = st.text_area(
-            f"{name}:", key="text_area_stream", label_visibility="collapsed"
+            f"You:", key="text_area_stream", label_visibility="collapsed"
         )
         submit_button = st.form_submit_button(label="Send")
 
     if submit_button and user_input:
-        messages = generate_stream(st, holder, user_input)
+        st.session_state["conversation_expanded"] = False
+        messages = generate_stream(st, stream_holder, user_input)
         # print("messages: ", messages)
         new_conversation = save_to_firestore(st, messages)
         if new_conversation is not None:
             st.experimental_set_query_params(cid=new_conversation.id)
-        st.experimental_rerun()
-
+            st.experimental_rerun()
