@@ -28,3 +28,4 @@ jobs:
           region: ${{ secrets.AWS_REGION }}
           deployment_package: chatlit.zip
           existing_bucket_name: ${{ secrets.BEANSTALK_BUCKET_NAME }}
+          use_existing_version_if_available: true
