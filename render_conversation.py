@@ -27,5 +27,4 @@ def render_messages(st, messages):
 
 def render_conversation(st, conversation):
     messages = conversation["messages"]
-
     render_messages(st, messages)

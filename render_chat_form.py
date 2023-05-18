@@ -1,13 +1,21 @@
 import openai
 from firestore_utils import firestore_save
 from utils import generate_conversation_title, get_oauth_uid
+import time
 
 
-def load_messages(st):
+def extract_messages(st):
+    default = [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant. Please use concise language to save bandwidth and token usage. Avoid 'AI language model' disclaimer whenever possible.",
+        }
+    ]
+
     conversation = st.session_state.get("conversation", {})
-    default = [{"role": "system", "content": "You are a helpful assistant."}]
+    messages = conversation.get("messages", default)
 
-    return conversation.get("messages", default)
+    return messages
 
 
 def get_content(st, response):
@@ -23,7 +31,7 @@ def get_content(st, response):
 
 def generate_response(st, prompt):
     model = st.session_state["model"]
-    messages = load_messages(st)
+    messages = extract_messages(st)
     messages.append({"role": "user", "content": prompt})
 
     print("openai.ChatCompletion.create with")
@@ -43,7 +51,7 @@ def generate_response(st, prompt):
     return messages, usage
 
 
-def save_to_firestore(st, messages, usage):
+def save_to_firestore(st, messages, usage=None):
     model = st.session_state["model"]
     if len(messages) > 0:
         conversation = st.session_state.get("conversation", {})
@@ -69,6 +77,7 @@ def save_to_firestore(st, messages, usage):
         return new_conversation
 
 
+# non-streaming version, with usage
 def render_chat_form(st):
     name = st.session_state.get("user_info", {}).get("name", "You")
     model = st.session_state["model"]
@@ -85,3 +94,83 @@ def render_chat_form(st):
         if new_conversation is not None:
             st.experimental_set_query_params(cid=new_conversation.id)
         st.experimental_rerun()
+
+
+# see sample-stream.json to know how to parse it
+def generate_stream(st, holder, user_input):
+    model = st.session_state["model"]
+    messages = extract_messages(st)
+    messages.append({"role": "user", "content": user_input})
+
+    print("openai.ChatCompletion.create with", model, messages)
+    completion = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        stream=True,
+    )
+
+    # first chunk should be
+    # {
+    #     "choices": [
+    #     {
+    #         "delta": {
+    #         "role": "assistant"
+    #         },
+    #         "finish_reason": null,
+    #         "index": 0
+    #     }
+    #     ],
+    #     "created": 1684389483,
+    #     "id": "chatcmpl-7HQwF5QPvTrDtYPOvBZbzFfDb9tcI",
+    #     "model": "gpt-3.5-turbo-0301",
+    #     "object": "chat.completion.chunk"
+    # }
+
+    # middle chunks are content:
+    with holder.container():
+        content = ""
+        for chunk in completion:
+            delta = chunk["choices"][0]["delta"]
+            if "content" in delta:
+                content += delta["content"]
+                holder.markdown(content)
+
+    # last chunk should be
+    # {
+    #     "choices": [
+    #     {
+    #         "delta": {},
+    #         "finish_reason": "stop",
+    #         "index": 0
+    #     }
+    #     ],
+    #     "created": 1684389483,
+    #     "id": "chatcmpl-7HQwF5QPvTrDtYPOvBZbzFfDb9tcI",
+    #     "model": "gpt-3.5-turbo-0301",
+    #     "object": "chat.completion.chunk"
+    # }
+
+    messages.append({"role": "assistant", "content": content})
+
+    # No usage info in stream mode yet
+    # https://community.openai.com/t/usage-info-in-api-responses/18862
+
+    return messages
+
+
+def render_chat_stream(st):
+    with st.form(key="chat_prompt", clear_on_submit=True):
+        stream_holder = st.empty()
+        user_input = st.text_area(
+            f"You:", key="text_area_stream", label_visibility="collapsed"
+        )
+        submit_button = st.form_submit_button(label="Send")
+
+    if submit_button and user_input:
+        st.session_state["conversation_expanded"] = False
+        messages = generate_stream(st, stream_holder, user_input)
+        # print("messages: ", messages)
+        new_conversation = save_to_firestore(st, messages)
+        if new_conversation is not None:
+            st.experimental_set_query_params(cid=new_conversation.id)
+            st.experimental_rerun()
