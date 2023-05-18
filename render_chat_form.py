@@ -43,7 +43,7 @@ def generate_response(st, prompt):
     return messages, usage
 
 
-def save_to_firestore(st, messages, usage):
+def save_to_firestore(st, messages, usage=None):
     model = st.session_state["model"]
     if len(messages) > 0:
         conversation = st.session_state.get("conversation", {})
@@ -85,3 +85,83 @@ def render_chat_form(st):
         if new_conversation is not None:
             st.experimental_set_query_params(cid=new_conversation.id)
         st.experimental_rerun()
+
+# see sample-stream.json to know how to parse it
+def generate_stream(st, holder, user_input):
+    model = st.session_state["model"]
+    messages = load_messages(st)
+    messages.append({"role": "user", "content": user_input})
+
+    print("openai.ChatCompletion.create with", model, messages)
+    completion = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        stream=True,
+    )
+
+    # first chunk should be
+    # {
+    #     "choices": [
+    #     {
+    #         "delta": {
+    #         "role": "assistant"
+    #         },
+    #         "finish_reason": null,
+    #         "index": 0
+    #     }
+    #     ],
+    #     "created": 1684389483,
+    #     "id": "chatcmpl-7HQwF5QPvTrDtYPOvBZbzFfDb9tcI",
+    #     "model": "gpt-3.5-turbo-0301",
+    #     "object": "chat.completion.chunk"
+    # }
+
+    # middle chunks are content:
+    content = ""
+    for chunk in completion:
+        delta = chunk["choices"][0]["delta"]
+        if "content" in delta:
+            content += delta["content"]
+            holder.markdown(content)
+
+    # last chunk should be
+    # {
+    #     "choices": [
+    #     {
+    #         "delta": {},
+    #         "finish_reason": "stop",
+    #         "index": 0
+    #     }
+    #     ],
+    #     "created": 1684389483,
+    #     "id": "chatcmpl-7HQwF5QPvTrDtYPOvBZbzFfDb9tcI",
+    #     "model": "gpt-3.5-turbo-0301",
+    #     "object": "chat.completion.chunk"
+    # }
+
+    messages.append({"role": "assistant", "content": content})
+
+    # No usage info in stream mode yet
+    # https://community.openai.com/t/usage-info-in-api-responses/18862
+
+    return messages
+
+
+def render_chat_stream(st):
+    name = st.session_state.get("user_info", {}).get("name", "You")
+
+    with st.form(key="chat_prompt", clear_on_submit=True):
+        holder = st.empty()
+        user_input = st.text_area(
+            f"{name}:", key="text_area_stream", label_visibility="collapsed"
+        )
+        submit_button = st.form_submit_button(label="Send")
+
+    if submit_button and user_input:
+        messages = generate_stream(st, holder, user_input)
+        # print("messages: ", messages)
+        new_conversation = save_to_firestore(st, messages)
+        if new_conversation is not None:
+            st.experimental_set_query_params(cid=new_conversation.id)
+        st.experimental_rerun()
+

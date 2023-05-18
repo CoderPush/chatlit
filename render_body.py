@@ -1,5 +1,5 @@
 from render_conversation import render_conversation
-from render_chat_form import render_chat_form
+from render_chat_form import render_chat_form, render_chat_stream
 from firestore_utils import get_firestore_db
 from utils import get_cid_from_params
 from firestore_utils import clear_user_history
@@ -52,7 +52,8 @@ def render_body(st):
         render_conversation(st, conversation)
 
     if st.session_state.get("user_info"):
-        render_chat_form(st)
+        # render_chat_form(st)
+        render_chat_stream(st)
     else:
         # load homepage.md into a string
         with open("content/overview.md", "r") as f:
