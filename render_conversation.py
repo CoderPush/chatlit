@@ -26,6 +26,7 @@ def render_messages(st, messages):
 
 
 def render_conversation(st, conversation):
-    messages = conversation["messages"]
+    with st.container():
+        messages = conversation["messages"]
 
     render_messages(st, messages)
