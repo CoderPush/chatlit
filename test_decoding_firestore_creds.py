@@ -9,7 +9,7 @@ load_dotenv()
 
 def encode_firestore_credentials():
     # open json file
-    with open("firestore-key.json") as f:
+    with open("creds/chatlit-dev-firebase.json") as f:
         data = f.read()
     # encode json to base64 string
     encoded = base64.b64encode(data.encode("utf-8"))
