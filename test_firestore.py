@@ -16,7 +16,7 @@ usage = {
     "prompt_tokens": 10,
     "completion_tokens": 90,
 }
-cid = "2ICFsbi1rR6iWEM3wjZ8"
+cid = None
 conversation = {
     "messages": messages,
     "usage": usage,
