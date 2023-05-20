@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 DEFAULT_MODEL = "gpt-3.5-turbo"
 
 

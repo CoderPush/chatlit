@@ -12,6 +12,7 @@ google-cloud-firestore = "*"
 firebase-admin = "*"
 streamlit-chat = {editable = true, git = "https://github.com/harley/st-chat.git"}
 streamlit-oauth = "*"
+promptlayer = "*"
 
 [dev-packages]
 pre-commit = "*"

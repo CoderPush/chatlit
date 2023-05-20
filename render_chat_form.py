@@ -1,7 +1,15 @@
-import openai
 from firestore_utils import firestore_save
 from utils import generate_conversation_title, get_oauth_uid
-import time
+import os
+import promptlayer
+import openai as openai_orig
+
+promptlayer.api_key = os.environ.get("PROMPTLAYER_API_KEY")
+if promptlayer.api_key is None:
+    openai = openai_orig
+else:
+    openai = promptlayer.openai
+    openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 
 def extract_messages(st):
