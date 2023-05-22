@@ -53,8 +53,10 @@ def get_key_from_params(st, key):
 def get_cid_from_params(st):
     return get_key_from_params(st, "cid")
 
+
 def get_cid_from_session(st):
     return st.session_state.get("cid", None)
+
 
 def get_oauth_uid(st):
     user_info = st.session_state.get("user_info", {})
