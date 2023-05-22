@@ -5,6 +5,7 @@ from render_body import render_body
 from render_my_conversations import render_my_conversations
 import streamlit as st
 from firestore_utils import clear_user_history
+from utils import get_cid_from_session
 
 from dotenv import load_dotenv
 
@@ -25,21 +26,20 @@ def load_and_store_conversation(st, cid: str):
     if conversation:
         st.session_state["conversation"] = conversation
         st.session_state["model"] = get_model_from_conversation(conversation)
-    st.session_state["cid"] = cid
 
 
 def controller():
-    # TODO: display useful total cost in $
-    st.session_state["total_cost"] = 0.0
     st.session_state["conversation_expanded"] = True
+
+    # TODO: save params to session if applicable
 
     # set model in session if specified in params
     model_from_param = get_key_from_params(st, "model")
     if model_from_param:
         st.session_state["model"] = model_from_param
 
-    # load conversation if cid is specified in params
-    cid = get_key_from_params(st, "cid")
+    # load conversation if cid is specified in session
+    cid = get_cid_from_session(st)
     if cid:
         load_and_store_conversation(st, cid)
 
@@ -64,14 +64,13 @@ def render_new_chat(sidebar):
             use_container_width=True,
             type="primary",
         ):
-            initialize_chat(model_type)
+            reinitialize_chat(model_type)
 
 
-def initialize_chat(model: str):
+def reinitialize_chat(model: str):
     st.session_state["conversation"] = DEFAULT_CONVERSATION
     st.session_state["model"] = model
     st.session_state["cid"] = None
-    st.experimental_set_query_params(model=model, cid="")
     st.experimental_rerun()
 
 
@@ -127,7 +126,7 @@ def render_sidebar(sidebar):
 
 def main():
     st.set_page_config(
-        page_title="CoderGPT Chat", page_icon=":robot_face:", layout="wide"
+        page_title="PushGPT Chat", page_icon=":robot_face:", layout="wide"
     )
     controller()
     render_sidebar(st.sidebar)

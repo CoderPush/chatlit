@@ -100,7 +100,7 @@ def render_chat_form(st):
         messages, usage = generate_response(st, user_input)
         new_conversation = save_to_firestore(st, messages, usage)
         if new_conversation is not None:
-            st.experimental_set_query_params(cid=new_conversation.id)
+            st.session_state["cid"] = new_conversation.id
         st.experimental_rerun()
 
 
@@ -180,5 +180,5 @@ def render_chat_stream(st):
         # print("messages: ", messages)
         new_conversation = save_to_firestore(st, messages)
         if new_conversation is not None:
-            st.experimental_set_query_params(cid=new_conversation.id)
+            st.session_state["cid"] = new_conversation.id
             st.experimental_rerun()

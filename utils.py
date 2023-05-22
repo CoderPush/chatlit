@@ -38,7 +38,7 @@ def button_row(st, cid, conversation, selected=False):
         title, key=f"button_{cid}", disabled=selected, use_container_width=True
     )
     if button:
-        st.experimental_set_query_params(cid=cid)
+        st.session_state["cid"] = cid
         st.experimental_rerun()
 
 
@@ -80,6 +80,11 @@ def get_key_from_params(st, key):
 def get_cid_from_params(st):
     return get_key_from_params(st, "cid")
 
+def get_cid_from_session(st):
+    if "cid" in st.session_state:
+        return st.session_state["cid"]
+    else:
+        return None
 
 def get_oauth_uid(st):
     user_info = st.session_state.get("user_info", {})
