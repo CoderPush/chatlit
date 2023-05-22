@@ -98,8 +98,8 @@ def render_profile(sidebar):
     status = f"Signed in as {user_info.get('email')}"
     with sidebar.expander(status):
         st.image(user_info.get("picture"), width=50)
-        signout = st.button("Sign out", key="button_signout", type="primary")
-        if signout:
+        sign_out = st.button("Sign out", key="button_sign_out", type="primary")
+        if sign_out:
             st.session_state.clear()
             st.experimental_rerun()
         st.write(

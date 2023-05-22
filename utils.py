@@ -42,33 +42,6 @@ def button_row(st, cid, conversation, selected=False):
         st.experimental_rerun()
 
 
-def generate_conversation_title(openai, messages):
-    user_messages = [m["content"] for m in messages if m["role"] == "user"]
-    conversation = " ".join(user_messages)
-
-    # Generate a prompt for the model
-    prompt = f"""
-    Based on the following user chat messages ---:
-
-    ---
-    {conversation}
-    ---
-
-    A title in 5 words or less, without quotes, for this conversation is: """
-
-    # Use the OpenAI API to generate a response
-    response = openai.Completion.create(
-        engine="text-davinci-002", prompt=prompt, temperature=0.3, max_tokens=60
-    )
-
-    # Extract the generated title
-    title = response["choices"][0]["text"].strip()
-    # remove surrounding quotes
-    title = title.replace('"', "")
-
-    return title
-
-
 def get_key_from_params(st, key):
     params = st.experimental_get_query_params()
     if key in params:
@@ -80,11 +53,13 @@ def get_key_from_params(st, key):
 def get_cid_from_params(st):
     return get_key_from_params(st, "cid")
 
+
 def get_cid_from_session(st):
     if "cid" in st.session_state:
         return st.session_state["cid"]
     else:
         return None
+
 
 def get_oauth_uid(st):
     user_info = st.session_state.get("user_info", {})

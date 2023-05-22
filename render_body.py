@@ -19,7 +19,6 @@ def render_body(st):
 
     if st.session_state.get("user_info"):
         with st.container():
-            # render_chat_form(st)
             render_chat_stream(st)
     else:
         # load homepage.md into a string
