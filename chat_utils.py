@@ -35,6 +35,7 @@ def generate_stream(st, holder, user_input):
         model=model,
         messages=messages,
         stream=True,
+        pl_tags=[model]
     )
 
     # first chunk should be
