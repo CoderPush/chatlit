@@ -32,7 +32,10 @@ def generate_stream(st, holder, user_input):
 
     print("openai.ChatCompletion.create with", model, messages)
     completion = openai.ChatCompletion.create(
-        model=model, messages=messages, stream=True, pl_tags=[model]
+        model=model,
+        messages=messages,
+        stream=True,
+        pl_tags=[model]
     )
 
     # first chunk should be
