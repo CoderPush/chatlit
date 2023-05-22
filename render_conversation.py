@@ -1,5 +1,4 @@
 from firestore_utils import get_firestore_db
-from utils import get_cid_from_params
 from streamlit_chat import message as chat_message
 
 
