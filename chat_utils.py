@@ -61,7 +61,7 @@ def generate_stream(st, holder, user_input):
             delta = chunk["choices"][0]["delta"]
             if "content" in delta:
                 content += delta["content"]
-                holder.markdown(content)
+                holder.info(content, icon="🤖")
 
     # last chunk should be
     # {
