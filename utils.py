@@ -90,8 +90,6 @@ def decode_token_from_params(st, key):
             str_data = base64.b64decode(base64_token.encode("utf-8")).decode("utf-8")
             # convert to dict
             dict_data = json.loads(str_data)
-
-            print("decode_token_from_params", dict_data)
             return dict_data
     except UnicodeDecodeError as e:
         st.error(e)
