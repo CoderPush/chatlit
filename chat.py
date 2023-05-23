@@ -1,11 +1,14 @@
 from firestore_utils import load_conversation_by_id
-from utils import get_key_from_params
+from utils import get_key_from_params, decode_token_from_params
 from render_auth import render_auth
 from render_body import render_body
 from render_my_conversations import render_my_conversations
 import streamlit as st
 from firestore_utils import clear_user_history
 from utils import get_cid_from_session
+import base64
+import json
+from google_utils import sign_out_google
 
 from dotenv import load_dotenv
 
@@ -30,6 +33,10 @@ def load_and_store_conversation(st, cid: str):
 
 def controller():
     st.session_state["conversation_expanded"] = True
+
+    token_dict = decode_token_from_params(st, "token")
+    if token_dict:
+        st.session_state["token"] = token_dict
 
     # TODO: save params to session if applicable
 
@@ -91,29 +98,40 @@ def render_history_menu(sidebar):
 
 
 def render_profile(sidebar):
-    user_info = st.session_state.get("user_info")
-    if not user_info:
-        return
+    authentication_status = st.session_state.get(
+        "authentication_status", "Not Authenticated"
+    )
+    if authentication_status == "Authenticated":
+        user_info = st.session_state.get("user_info")
+        if not user_info:
+            return
 
-    status = f"Signed in as {user_info.get('email')}"
-    with sidebar.expander(status):
-        st.image(user_info.get("picture"), width=50)
-        sign_out = st.button("Sign out", key="button_sign_out", type="primary")
-        if sign_out:
-            st.session_state.clear()
-            st.experimental_rerun()
-        st.write(
-            "While it's useful to resume past conversations, sometimes you may want to clear your chat history."
-        )
-        placeholder = st.empty()
-        with placeholder:
-            clear_history = st.button(
-                "Clear History", key="button_clear_history", type="primary"
+        status = f"Signed in as {user_info.get('email')}"
+        login_container = sidebar.empty()
+        with login_container.expander(status):
+            st.image(user_info.get("picture"), width=50)
+            sign_out = st.button("Sign out", key="button_sign_out", type="primary")
+
+            placeholder = st.empty()
+            with placeholder:
+                clear_history = st.button(
+                    "Clear History", key="button_clear_history", type="primary"
+                )
+
+            if clear_history:
+                clear_user_history(user_info["id"])
+                placeholder.info("Chat history cleared", icon="✅")
+                st.snow()
+            st.write(
+                "While it's useful to resume past conversations, sometimes you may want to clear your chat history."
             )
-        if clear_history:
-            clear_user_history(user_info["id"])
-            placeholder.info("Chat history cleared", icon="✅")
-            st.snow()
+
+        if sign_out:
+            sign_out_google(st, login_container)
+            st.experimental_set_query_params()
+            del st.session_state["token"]
+            del st.session_state["user_info"]
+            st.session_state["authentication_status"] = "Not Authenticated"
 
 
 def render_sidebar(sidebar):
