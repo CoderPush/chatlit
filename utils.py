@@ -55,10 +55,7 @@ def get_cid_from_params(st):
 
 
 def get_cid_from_session(st):
-    if "cid" in st.session_state:
-        return st.session_state["cid"]
-    else:
-        return None
+    return st.session_state.get("cid", None)
 
 
 def get_oauth_uid(st):

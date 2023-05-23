@@ -2,6 +2,10 @@ import requests
 import os
 from streamlit_oauth import OAuth2Component
 from firebase_utils import create_user_in_firebase_if_not_exists
+from utils import get_key_from_params
+import base64
+import json
+import time
 
 from dotenv import load_dotenv
 
@@ -20,6 +24,24 @@ CLIENT_SECRET = os.environ["GOOGLE_CLIENT_SECRET"]
 REDIRECT_URI = os.environ["REDIRECT_URI"]
 
 
+# convert json to base64 string
+# INPUT:
+# {
+# "access_token": "",
+# "expires_in": 3599,
+# "scope": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid",
+# "token_type": "Bearer",
+# "id_token": "",
+# "expires_at": 1684836588
+# }
+# OUTPUT:
+# eyJhY2Nlc3NfdG9rZW4iOiIiLCJleHBpcmVzX2luIjozNTk5LCJzY29wZSI6Imh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL2F1dGgvdXNlcm5hbWUucHJvZmlsZSBodHRwczovL3d3dy5nb29nbGVhcGlzLmNvbS9hdXRoL3VzZXJpbmZvLmVtYWlsIG9wZW5pZCB0eXBlIjoiQmVhcmVyIiwiaWRfdG9rZW4iOiIiLCJleHBpcmVzX2F0IjoxNjg0ODM2NTg4fQ==
+def dict_to_base64(token):
+    json_data = json.dumps(token)
+    encoded = base64.b64encode(json_data.encode("utf-8"))
+    return encoded
+
+
 def auth_with_google(st):
     # Create OAuth2Component instance
     oauth2 = OAuth2Component(
@@ -31,23 +53,32 @@ def auth_with_google(st):
         REVOKE_TOKEN_URL,
     )
 
+    sign_in_holder = st.empty()
     # Check if token exists in session state
     if "token" not in st.session_state:
-        # If not, show authorize button
-        result = oauth2.authorize_button("Sign in with Google", REDIRECT_URI, SCOPE)
+        with sign_in_holder.container():
+            # If not, show authorize button
+            result = oauth2.authorize_button("Sign in with Google", REDIRECT_URI, SCOPE)
         if result and "token" in result:
             # If authorization successful, save token in session state
-            st.session_state["token"] = result.get("token")
-            st.experimental_rerun()
+            token = result["token"]
+            st.session_state["token"] = token
+            base64_token = dict_to_base64(token)
+            st.experimental_set_query_params(token=base64_token)
+            sign_in_holder.empty()
     else:
-        # If token exists in session state, show the token
         token = st.session_state["token"]
-
-        # if st.sidebar.button("Refresh Token"):
-        # If refresh token button is clicked, refresh the token
-        # token = oauth2.refresh_token(token)
-        # st.session_state.token = token
-        # st.experimental_rerun()
+        expires_at = token.get("expires_at")
+        if expires_at and expires_at < time.time():
+            try:
+                token = oauth2.refresh_token(token)
+                st.session_state.token = token
+                print.log("Refreshed token at ", expires_at)
+                st.session_state.token = token
+                st.experimental_rerun()
+            except Exception as e:
+                st.experimental_set_query_params()
+                st.error(e)
 
 
 def update_authentication_status(st):
@@ -63,7 +94,12 @@ def update_authentication_status(st):
             st.session_state["name"] = user_info["name"]
             st.session_state["user_info"] = user_info
         else:
-            st.error("Failed to get user info.")
+            st.experimental_set_query_params()
+            st.markdown(
+                "Failed to get user info. <a href='/' target='_self'>Reload?</a>",
+                unsafe_allow_html=True,
+            )
+            del st.session_state["token"]
             st.session_state["authentication_status"] = "Not Authenticated"
     except KeyError:
         st.session_state["authentication_status"] = "Token Missing"
@@ -80,3 +116,41 @@ def get_user_info(access_token):
         return user_info
     else:
         return None
+
+
+# log out google using access_token
+def sign_out_google(st, login_placeholder):
+    access_token = st.session_state.get("token", {}).get("access_token")
+
+    if not access_token:
+        st.error("Error with access token")
+        return
+
+    response = requests.post(
+        REVOKE_TOKEN_URL,
+        params={"token": access_token},
+    )
+
+    if response.status_code == 200:
+        login_placeholder.empty()
+        st.sidebar.markdown(
+            "Successfully logged out. <a href='/' target='_self'>Reload?</a>",
+            unsafe_allow_html=True,
+        )
+    else:
+        st.error("Failed to log out")
+        print("Failed to log out:")
+        print(response)
+
+
+def decode_token_from_params(st, key):
+    try:
+        base64_token = get_key_from_params(st, key)
+        if base64_token:
+            # decode token
+            str_data = base64.b64decode(base64_token.encode("utf-8")).decode("utf-8")
+            # convert to dict
+            dict_data = json.loads(str_data)
+            return dict_data
+    except UnicodeDecodeError as e:
+        st.error(e)
