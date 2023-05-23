@@ -1,5 +1,5 @@
 from firestore_utils import load_conversation_by_id
-from utils import get_key_from_params, decode_token_from_params
+from utils import get_key_from_params
 from render_auth import render_auth
 from render_body import render_body
 from render_my_conversations import render_my_conversations
@@ -8,7 +8,7 @@ from firestore_utils import clear_user_history
 from utils import get_cid_from_session
 import base64
 import json
-from google_utils import sign_out_google
+from google_utils import sign_out_google, decode_token_from_params
 
 from dotenv import load_dotenv
 

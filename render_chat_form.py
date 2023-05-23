@@ -38,12 +38,11 @@ def render_chat_stream(st):
             f"You:", key="text_area_stream", label_visibility="collapsed"
         )
 
-        generating = st.session_state.get("generating", False)
-        submit_button = st.form_submit_button(label="Send", disabled=generating)
+        submit_button = st.form_submit_button(label="Send", disabled=st.session_state.get("generating", False))
 
     if submit_button and user_input:
-        st.session_state["conversation_expanded"] = False
         st.session_state["generating"] = True
+        st.session_state["conversation_expanded"] = False
         generate_stream(st, stream_holder, user_input)
         st.session_state["generating"] = False
         new_conversation = save_messages_to_firestore(st)

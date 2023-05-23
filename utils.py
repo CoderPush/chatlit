@@ -1,7 +1,3 @@
-import base64
-import json
-
-
 def link_button(st, text, path):
     st.write(
         f"""
@@ -81,15 +77,3 @@ def get_expander_text(st):
         text += f" ({len(user_messages)} messages)"
     return text
 
-
-def decode_token_from_params(st, key):
-    try:
-        base64_token = get_key_from_params(st, key)
-        if base64_token:
-            # decode token
-            str_data = base64.b64decode(base64_token.encode("utf-8")).decode("utf-8")
-            # convert to dict
-            dict_data = json.loads(str_data)
-            return dict_data
-    except UnicodeDecodeError as e:
-        st.error(e)

@@ -2,6 +2,7 @@ import requests
 import os
 from streamlit_oauth import OAuth2Component
 from firebase_utils import create_user_in_firebase_if_not_exists
+from utils import get_key_from_params
 import base64
 import json
 import time
@@ -140,3 +141,16 @@ def sign_out_google(st, login_placeholder):
         st.error("Failed to log out")
         print("Failed to log out:")
         print(response)
+
+
+def decode_token_from_params(st, key):
+    try:
+        base64_token = get_key_from_params(st, key)
+        if base64_token:
+            # decode token
+            str_data = base64.b64decode(base64_token.encode("utf-8")).decode("utf-8")
+            # convert to dict
+            dict_data = json.loads(str_data)
+            return dict_data
+    except UnicodeDecodeError as e:
+        st.error(e)
