@@ -76,4 +76,3 @@ def get_expander_text(st):
     if len(messages) > 0:
         text += f" ({len(user_messages)} messages)"
     return text
-
