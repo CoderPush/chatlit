@@ -88,17 +88,24 @@ def update_authentication_status(st):
         if access_token:
             user_info = get_user_info(access_token)
 
-        if user_info:
+        if user_info and user_info["email"].split("@")[1] == "coderpush.com":
             create_user_in_firebase_if_not_exists(user_info)
             st.session_state["authentication_status"] = "Authenticated"
             st.session_state["name"] = user_info["name"]
             st.session_state["user_info"] = user_info
+
         else:
             st.experimental_set_query_params()
+
+            message = "Failed to get user info. <a href='/' target='_self'>Reload?</a>"
+
+            if user_info["email"].split("@")[1] != "coderpush.com":
+                message = "This site limit to coderpush. <a href='/' target='_self'>Reload?</a>"
+
             st.markdown(
-                "Failed to get user info. <a href='/' target='_self'>Reload?</a>",
-                unsafe_allow_html=True,
-            )
+                    message,
+                    unsafe_allow_html=True,
+                )
             del st.session_state["token"]
             st.session_state["authentication_status"] = "Not Authenticated"
     except KeyError:
