@@ -96,7 +96,6 @@ def update_authentication_status(st):
             user_info = get_user_info(access_token)
 
         if user_info and is_whitelisted_email_domain(user_info["email"]):
-
             create_user_in_firebase_if_not_exists(user_info)
             st.session_state["authentication_status"] = "Authenticated"
             st.session_state["name"] = user_info["name"]
@@ -111,9 +110,9 @@ def update_authentication_status(st):
                 message = "This site is limited to whitelisted domains. <a href='/' target='_self'>Reload?</a>"
 
             st.markdown(
-                    message,
-                    unsafe_allow_html=True,
-                )
+                message,
+                unsafe_allow_html=True,
+            )
             del st.session_state["token"]
             st.session_state["authentication_status"] = "Not Authenticated"
     except KeyError:
