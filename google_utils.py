@@ -23,6 +23,13 @@ CLIENT_ID = os.environ["GOOGLE_CLIENT_ID"]
 CLIENT_SECRET = os.environ["GOOGLE_CLIENT_SECRET"]
 REDIRECT_URI = os.environ["REDIRECT_URI"]
 
+WHITELISTED_DOMAINS = os.getenv("WHITELISTED_DOMAINS", "coderpush.com")
+WHITELISTED_DOMAINS_SET = set(WHITELISTED_DOMAINS.split(","))
+
+
+def is_whitelisted_email_domain(email):
+    return email.split("@")[1] in WHITELISTED_DOMAINS_SET
+
 
 # convert json to base64 string
 # INPUT:
@@ -88,7 +95,8 @@ def update_authentication_status(st):
         if access_token:
             user_info = get_user_info(access_token)
 
-        if user_info and user_info["email"].split("@")[1] == "coderpush.com":
+        if user_info and is_whitelisted_email_domain(user_info["email"]):
+
             create_user_in_firebase_if_not_exists(user_info)
             st.session_state["authentication_status"] = "Authenticated"
             st.session_state["name"] = user_info["name"]
@@ -99,8 +107,8 @@ def update_authentication_status(st):
 
             message = "Failed to get user info. <a href='/' target='_self'>Reload?</a>"
 
-            if user_info["email"].split("@")[1] != "coderpush.com":
-                message = "This site limit to coderpush. <a href='/' target='_self'>Reload?</a>"
+            if not is_whitelisted_email_domain(user_info["email"]):
+                message = "This site is limited to whitelisted domains. <a href='/' target='_self'>Reload?</a>"
 
             st.markdown(
                     message,
