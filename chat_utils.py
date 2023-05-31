@@ -1,13 +1,19 @@
 import os
 import promptlayer
 import openai as openai_orig
+import openai_mock
 
-promptlayer.api_key = os.environ.get("PROMPTLAYER_API_KEY")
-if promptlayer.api_key is None:
-    openai = openai_orig
+env = os.getenv("APP_ENV", "dev")
+
+if env == "dev":
+    openai = openai_mock.MockOpenAI
 else:
-    openai = promptlayer.openai
-    openai.api_key = os.environ.get("OPENAI_API_KEY")
+    promptlayer.api_key = os.environ.get("PROMPTLAYER_API_KEY")
+    if promptlayer.api_key is None:
+        openai = openai_orig
+    else:
+        openai = promptlayer.openai
+        openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 
 def extract_messages(st):
@@ -30,7 +36,7 @@ def generate_stream(st, holder, user_input):
     messages = extract_messages(st)
     messages.append({"role": "user", "content": user_input})
 
-    print("openai.ChatCompletion.create with", model, messages)
+    print("openai.ChatCompletion.create with", openai, model, messages)
     completion = openai.ChatCompletion.create(
         model=model, messages=messages, stream=True, pl_tags=[model]
     )
@@ -56,7 +62,7 @@ def generate_stream(st, holder, user_input):
     with holder.container():
         content = ""
         for chunk in completion:
-            delta = chunk["choices"][0]["delta"]
+            delta = chunk["choices"][0].get("delta", {})
             if "content" in delta:
                 content += delta["content"]
                 holder.info(content, icon="🤖")

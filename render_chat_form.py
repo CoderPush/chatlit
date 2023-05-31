@@ -41,7 +41,11 @@ def render_chat_stream(st):
         )
         submit_holder = st.empty()
         generating = st.session_state.get("generating", False)
-        if not generating:
+        if generating:
+            submit_button = submit_holder.form_submit_button(
+                label="Generating...", disabled=True
+            )
+        else:
             submit_button = submit_holder.form_submit_button(label="Send")
 
     if submit_button and user_input:

@@ -106,7 +106,7 @@ def update_authentication_status(st):
 
             message = "Failed to get user info. <a href='/' target='_self'>Reload?</a>"
 
-            if not is_whitelisted_email_domain(user_info["email"]):
+            if user_info and not is_whitelisted_email_domain(user_info["email"]):
                 message = "This site is limited to whitelisted domains. <a href='/' target='_self'>Reload?</a>"
 
             st.markdown(
