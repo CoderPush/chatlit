@@ -22,7 +22,7 @@ def hack_css(sidebar):
 
 
 def render_my_conversations(st, sidebar):
-    hack_css(sidebar)
+    #hack_css(sidebar)
     db = get_firestore_db()
     uid = get_oauth_uid(st)
     cid_from_params = get_cid_from_session(st)
