@@ -26,12 +26,13 @@ def render_my_conversations(st, sidebar):
     db = get_firestore_db()
     uid = get_oauth_uid(st)
     cid_from_params = get_cid_from_session(st)
-
+    model_name = st.session_state["model"]
     if uid:
         # load only conversations that belong to the user, newest first
         conversations = (
             db.collection("conversations")
             .where("uid", "==", uid)
+            .where("model_name", "==", model_name)
             .order_by("created", direction="DESCENDING")
             .stream()
         )
