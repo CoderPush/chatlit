@@ -60,16 +60,19 @@ DEFAULT_CONVERSATION = {}
 
 def render_new_chat(sidebar):
     button_models = {"GPT-3.5 Chat": "gpt-3.5-turbo", "GPT-4 Chat": "gpt-4"}
-
     for button_text, model_type in button_models.items():
         # if model in session_state is the same as the button, prefix button_text with a checked emoji
         if st.session_state.get("model") == model_type:
             button_text = "✓ " + button_text
+            button_type = "primary"
+        else:
+            button_type = "secondary"
+
         if sidebar.button(
             button_text,
             key=f"button_{model_type}",
             use_container_width=True,
-            type="primary",
+            type=button_type,
         ):
             reinitialize_chat(model_type)
 
@@ -110,12 +113,12 @@ def render_profile(sidebar):
         login_container = sidebar.empty()
         with login_container.expander(status):
             st.image(user_info.get("picture"), width=50)
-            sign_out = st.button("Sign out", key="button_sign_out", type="primary")
+            sign_out = st.button("Sign out", key="button_sign_out", type="secondary")
 
             placeholder = st.empty()
             with placeholder:
                 clear_history = st.button(
-                    "Clear History", key="button_clear_history", type="primary"
+                    "Clear History", key="button_clear_history", type="secondary"
                 )
 
             if clear_history:
@@ -136,6 +139,7 @@ def render_profile(sidebar):
 
 def render_sidebar(sidebar):
     render_new_chat(sidebar)
+    sidebar.divider()
     render_auth(st)
     render_profile(sidebar)
     sidebar.divider()
