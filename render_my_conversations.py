@@ -2,27 +2,7 @@ from firestore_utils import get_firestore_db
 from utils import button_row, get_cid_from_session, get_oauth_uid
 
 
-def hack_css(sidebar):
-    sidebar.markdown(
-        """
-        <style>
-            button[kind='secondary'] {
-                display: inherit;
-                text-align: left;
-                border: 0;
-            }
-            button[kind='primary'] {
-                background-color: inherit;
-                color: inherit;
-            }
-        </style>
-    """,
-        unsafe_allow_html=True,
-    )
-
-
 def render_my_conversations(st, sidebar):
-    #hack_css(sidebar)
     db = get_firestore_db()
     uid = get_oauth_uid(st)
     cid_from_params = get_cid_from_session(st)
