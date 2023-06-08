@@ -1,3 +1,6 @@
+from firestore_utils import delete_convo
+
+
 def link_button(st, text, path):
     st.write(
         f"""
@@ -34,12 +37,28 @@ def link_row(st, text, path, selected=False):
 
 def button_row(st, cid, conversation, selected=False):
     title = conversation.get("title", cid)
-    button = st.sidebar.button(
-        title, key=f"button_{cid}", disabled=selected, use_container_width=True
-    )
-    if button:
-        st.session_state["cid"] = cid
-        st.experimental_rerun()
+    container = st.sidebar.container()
+    with container:
+        col1, col2 = st.columns([5, 1])
+
+        with col1:
+            convo_button = st.button(
+                title, key=f"button_{cid}", disabled=selected, use_container_width=True
+            )
+            if convo_button:
+                st.session_state["cid"] = cid
+                st.experimental_rerun()
+
+        with col2:
+            delete_button = st.button(
+                "🗑️",
+                key=f"delete_convo_button_{cid}",
+                disabled=selected,
+                use_container_width=True,
+            )
+            if delete_button:
+                delete_convo(cid)
+                st.experimental_rerun()
 
 
 def get_key_from_params(st, key):

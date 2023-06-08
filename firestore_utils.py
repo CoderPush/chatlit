@@ -49,3 +49,10 @@ def clear_user_history(uid):
     conversations = db.collection("conversations").where("uid", "==", uid).stream()
     for c in conversations:
         c.reference.delete()
+
+
+def delete_convo(convo_id):
+    db = get_firestore_db()
+    document_ref = db.collection("conversations").document(convo_id)
+    document_ref.delete()
+    print(f"Deleted document with ID: {convo_id}")
