@@ -56,3 +56,13 @@ def delete_convo(convo_id):
     document_ref = db.collection("conversations").document(convo_id)
     document_ref.delete()
     print(f"Deleted document with ID: {convo_id}")
+
+def edit_convo(convo_id, new_label):
+    try: 
+        db = get_firestore_db()
+        document_ref = db.collection("conversations").document(convo_id)
+        document_ref.update({"title": new_label})
+        print(f"Updated document with ID: {convo_id}")
+    except Exception as e:
+        print(e)
+

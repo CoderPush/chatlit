@@ -1,4 +1,4 @@
-from firestore_utils import delete_convo
+from firestore_utils import delete_convo, edit_convo
 
 
 def link_button(st, text, path):
@@ -38,20 +38,40 @@ def link_row(st, text, path, selected=False):
 def button_row(st, cid, conversation, selected=False):
     title = conversation.get("title", cid)
     container = st.sidebar.container()
+
     with container:
-        col1, col2 = st.columns([5, 1])
+        col1, col2, col3 = st.columns([7, 1, 1], gap="small")
 
         with col1:
-            convo_button = st.button(
-                title, key=f"button_{cid}", disabled=selected, use_container_width=True
-            )
-            if convo_button:
-                st.session_state["cid"] = cid
+            isEdit = st.session_state.get(f"edit_convo_button_{cid}", False)
+
+            if not isEdit:
+                convo_button = st.button(
+                    title, key=f"button_{cid}", disabled=selected, use_container_width=True
+                )
+                if convo_button:
+                    st.session_state["cid"] = cid
+                    st.experimental_rerun()
+            else:
+                st.text_input("Edit Label", title, key=f"new_title_{cid}", max_chars=30, label_visibility="collapsed")
+            
+            new_title = st.session_state.get(f"new_title_{cid}", "")
+            if new_title and new_title != title:
+                edit_convo(cid, new_label=new_title)
+                st.session_state[f"new_title_{cid}"] = ""
                 st.experimental_rerun()
 
         with col2:
+            st.button(
+                ":pencil2:",
+                key=f"edit_convo_button_{cid}",
+                disabled=selected,
+                use_container_width=True,
+            )
+
+        with col3:
             delete_button = st.button(
-                "🗑️",
+                ":wastebasket:",
                 key=f"delete_convo_button_{cid}",
                 disabled=selected,
                 use_container_width=True,
