@@ -57,4 +57,4 @@ def render_chat_stream(st):
         st.session_state["generating"] = False
         if new_conversation is not None:
             st.session_state["cid"] = new_conversation.id
-            st.experimental_rerun()
+            # st.experimental_rerun()
