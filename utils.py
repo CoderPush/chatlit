@@ -40,7 +40,7 @@ def button_row(st, cid, conversation, selected=False):
     container = st.sidebar.container()
 
     with container:
-        col1, col2, col3 = st.columns([7, 1, 1], gap="small")
+        col1, col2, col3 = st.columns([6, 1, 1], gap="small")
 
         with col1:
             isEdit = st.session_state.get(f"edit_convo_button_{cid}", False)
@@ -79,6 +79,47 @@ def button_row(st, cid, conversation, selected=False):
             if delete_button:
                 delete_convo(cid)
                 st.experimental_rerun()
+
+    css='''
+        <style>
+            div.css-ocqkz7.e1tzin5v3  {
+                border: 1px solid #e6e6e6;
+                border-radius: 4px;
+                background-color: #fff;
+            }
+            div.css-ocqkz7.e1tzin5v3 .stButton > button {
+                border: 1px solid transparent;
+                background-color: #fff;
+                align-items: center;
+            }
+            div.css-ocqkz7.e1tzin5v3 .stButton > button:hover {
+                color: #6e6e6e;
+            }
+            div.css-ocqkz7.e1tzin5v3 [data-testid="column"]:first-child .stButton > button {
+                justify-content: flex-start;
+                width: 220px;
+                overflow: hidden; 
+                white-space: nowrap;
+                position: relative;
+                background: -webkit-linear-gradient(right, rgba(0,0,0,0), rgba(0,0,0,1));
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            div.css-ocqkz7.e1tzin5v3 [data-testid="column"]:nth-child(2) .stButton{
+                position: relative;
+            }
+            div.css-ocqkz7.e1tzin5v3 [data-testid="column"]:nth-child(2) .stButton > button {
+                position: absolute;
+                top: 0;
+                right: -15px;
+            }
+        </style>
+        '''
+
+    st.sidebar.markdown(css, unsafe_allow_html=True)
 
 
 def get_key_from_params(st, key):
