@@ -146,7 +146,6 @@ def render_sidebar(sidebar):
     render_history_menu(sidebar)
 
 
-
 def main():
     st.set_page_config(
         page_title="PushGPT Chat", page_icon=":robot_face:", layout="wide"

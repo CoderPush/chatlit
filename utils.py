@@ -47,14 +47,23 @@ def button_row(st, cid, conversation, selected=False):
 
             if not isEdit:
                 convo_button = st.button(
-                    title, key=f"button_{cid}", disabled=selected, use_container_width=True
+                    title,
+                    key=f"button_{cid}",
+                    disabled=selected,
+                    use_container_width=True,
                 )
                 if convo_button:
                     st.session_state["cid"] = cid
                     st.experimental_rerun()
             else:
-                st.text_input("Edit Label", title, key=f"new_title_{cid}", max_chars=30, label_visibility="collapsed")
-            
+                st.text_input(
+                    "Edit Label",
+                    title,
+                    key=f"new_title_{cid}",
+                    max_chars=30,
+                    label_visibility="collapsed",
+                )
+
             new_title = st.session_state.get(f"new_title_{cid}", "")
             if new_title and new_title != title:
                 edit_convo(cid, new_label=new_title)
@@ -80,7 +89,7 @@ def button_row(st, cid, conversation, selected=False):
                 delete_convo(cid)
                 st.experimental_rerun()
 
-    css='''
+    css = """
         <style>
             div.css-ocqkz7.e1tzin5v3  {
                 border: 1px solid #e6e6e6;
@@ -117,7 +126,7 @@ def button_row(st, cid, conversation, selected=False):
                 right: -15px;
             }
         </style>
-        '''
+        """
 
     st.sidebar.markdown(css, unsafe_allow_html=True)
 
