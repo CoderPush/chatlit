@@ -32,7 +32,7 @@ def save_messages_to_firestore(st, usage=None):
 
 
 def render_chat_stream(st):
-    with st.form(key="chat_prompt", clear_on_submit=True):
+    with st.container():
         # generate response stream here
         stream_holder = st.empty()
 
@@ -42,13 +42,13 @@ def render_chat_stream(st):
         submit_holder = st.empty()
         generating = st.session_state.get("generating", False)
         if generating:
-            submit_button = submit_holder.form_submit_button(
+            submit_button = submit_holder.button(
                 label="Generating...", disabled=True
             )
         else:
-            submit_button = submit_holder.form_submit_button(label="Send")
+            submit_button = submit_holder.button(label="Send")
 
-    if submit_button and user_input:
+    if submit_button or user_input:
         st.session_state["generating"] = True
         submit_holder.empty()
         st.session_state["conversation_expanded"] = False
