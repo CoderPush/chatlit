@@ -56,3 +56,9 @@ def delete_convo(convo_id):
     document_ref = db.collection("conversations").document(convo_id)
     document_ref.delete()
     print(f"Deleted document with ID: {convo_id}")
+    
+
+def update_conversation_name_by_id(cid, new_name):
+    db = get_firestore_db()
+    conversation = db.collection("conversations").document(cid)
+    conversation.update({"title": new_name})
