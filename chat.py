@@ -7,8 +7,7 @@ import streamlit as st
 from firestore_utils import clear_user_history
 from utils import get_cid_from_session
 from render_custom_js import render_custom_js
-import base64
-import json
+from debugger import debugger
 from google_utils import sign_out_google, decode_token_from_params
 
 from dotenv import load_dotenv
@@ -159,14 +158,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    with st.expander("Debug"):
-        col1, col2 = st.columns(2)
-        col1.write("Session State (w/o conversation, user_info))")
-        # exclude conversation from session_state
-        session_state = {
-            k: v for k, v in st.session_state.items() if k != "conversation"
-        }
-        col1.write(session_state)
-        col2.write("Conversation")
-        col2.write(st.session_state.get("conversation"))
+    debugger()
