@@ -81,9 +81,7 @@ def auth_with_google(st):
                     model=model,
                 )
             else:
-                st.experimental_set_query_params(
-                    token=base64_token
-                )
+                st.experimental_set_query_params(token=base64_token)
             sign_in_holder.empty()
     else:
         token = st.session_state["token"]

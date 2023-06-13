@@ -8,6 +8,7 @@ from render_body import render_body
 from debugger import debugger
 import time
 
+
 def is_authenticated(st):
     if "token" not in st.session_state:
         return False
@@ -18,7 +19,8 @@ def is_authenticated(st):
             return False
         else:
             return True
-        
+
+
 def controller():
     st.session_state["conversation_expanded"] = True
 
@@ -26,29 +28,34 @@ def controller():
     if token_dict:
         st.session_state["token"] = token_dict
 
-def show_readonly_shared_conversation(st, cid, model):
-     # get the conversation from the cid
-        conversation = load_conversation_by_id(cid).to_dict()
-        st.title(conversation["title"])
-        # show messages for the conversation
-        render_conversation(st, conversation)
 
-        continue_convo_holder = st.empty()
-        continue_convo_btn = continue_convo_holder.button("Continue the chat")
-        if continue_convo_btn:
-            if not is_authenticated(st):
-                continue_convo_holder.write("You must be logged in to continue the conversation")
-            else:
-                continue_convo_holder.empty()
-                with st.container():
-                    # Save conversation to firestore
-                    st.session_state["messages"] = conversation["messages"]
-                    st.session_state["model"] = model
-                    st.session_state["conversation"] = conversation
-                    # save the state
-                    st.session_state[f"edit_shared_conversation_{cid}"] = True
-                    # rerun the app
-                    st.experimental_rerun()                    
+def show_readonly_shared_conversation(st, cid, model):
+    # get the conversation from the cid
+    conversation = load_conversation_by_id(cid).to_dict()
+    st.title(conversation["title"])
+    # show messages for the conversation
+    render_conversation(st, conversation)
+
+    continue_convo_holder = st.empty()
+    continue_convo_btn = continue_convo_holder.button("Continue the chat")
+    if continue_convo_btn:
+        if not is_authenticated(st):
+            continue_convo_holder.write(
+                "You must be logged in to continue the conversation"
+            )
+        else:
+            continue_convo_holder.empty()
+            with st.container():
+                # Save conversation to firestore
+                st.session_state["messages"] = conversation["messages"]
+                st.session_state["model"] = model
+                st.session_state["conversation"] = conversation
+                # save the state
+                st.session_state[f"edit_shared_conversation_{cid}"] = True
+                # rerun the app
+                st.experimental_rerun()
+
+
 def main():
     st.set_page_config(
         page_title="PushGPT Share", page_icon=":robot_face:", layout="wide"
@@ -69,12 +76,11 @@ def main():
             show_readonly_shared_conversation(st, cid, model)
         else:
             render_body(st)
-    
+
     except Exception as e:
         st.title("No conversation found")
+
 
 if __name__ == "__main__":
     main()
     debugger()
-
-    
