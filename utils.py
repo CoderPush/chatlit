@@ -1,5 +1,5 @@
 from firestore_utils import delete_convo
-
+from firestore_utils import update_conversation_name_by_id
 
 def link_button(st, text, path):
     st.write(
@@ -39,7 +39,7 @@ def button_row(st, cid, conversation, selected=False):
     title = conversation.get("title", cid)
     container = st.sidebar.container()
     with container:
-        col1, col2 = st.columns([5, 1])
+        col1, col2, col3 = st.columns([5, 1, 1])
 
         with col1:
             convo_button = st.button(
@@ -60,6 +60,13 @@ def button_row(st, cid, conversation, selected=False):
                 delete_convo(cid)
                 st.experimental_rerun()
 
+        with col3:
+            rename_button = st.button("🖊️", key=f"rename_{cid}", disabled=selected, use_container_width=True)
+        
+        if rename_button:
+            rename_input = st.text_input("New Conversation Name:", value=title, key=f"rename_input_{cid}")
+            if rename_input:
+                update_conversation_name_by_id(cid, rename_input)
 
 def get_key_from_params(st, key):
     params = st.experimental_get_query_params()
