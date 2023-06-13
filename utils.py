@@ -75,7 +75,7 @@ def button_row(st, cid, conversation, selected=False):
 def get_key_from_params(st, key):
     params = st.experimental_get_query_params()
     if key in params:
-        return params["token"][0]
+        return params[key][0]
     else:
         return None
 
