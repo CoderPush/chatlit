@@ -39,7 +39,7 @@ def button_row(st, cid, conversation, selected=False):
     title = conversation.get("title", cid)
     container = st.sidebar.container()
     with container:
-        col1, col2 = st.columns([5, 1])
+        col1, col2, col3 = st.columns([5, 1, 1])
 
         with col1:
             convo_button = st.button(
@@ -50,6 +50,41 @@ def button_row(st, cid, conversation, selected=False):
                 st.experimental_rerun()
 
         with col2:
+            st.write(
+                """<button id="share-convo-btn">:outbox_tray:</button>""",
+                unsafe_allow_html=True,
+            )
+
+            js = f"""
+                <script>
+                    const button = window.parent.document.getElementById("share-convo-btn");
+                    const shareUrl = window.parent.location.origin + "/share" + "?cid={cid}"
+                    window.parent.navigator.clipboard.writeText(shareUrl);
+                    button.addEventListener("click", function() {{
+                        window.parent.alert("Copied to clipboard! ");
+                    }});
+                </script>
+                """
+
+            st.components.v1.html(js)
+
+            css = """
+                <style>
+                    #share-convo-btn {
+                        border: 1px solid rgba(49, 51, 63, 0.2);
+                        border-radius: 4px;
+                        background-color: rgb(249, 249, 251);
+                        height: 35px;
+                    }
+                    #share-convo-btn:hover {
+                        border-color: red;
+                    }
+                </style>
+                """
+
+            st.markdown(css, unsafe_allow_html=True)
+
+        with col3:
             delete_button = st.button(
                 "🗑️",
                 key=f"delete_convo_button_{cid}",
