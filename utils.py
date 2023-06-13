@@ -38,7 +38,7 @@ def link_row(st, text, path, selected=False):
 def button_row(st, cid, conversation, selected=False):
     title = conversation.get("title", cid)
     container = st.sidebar.container()
-    model = st.session_state.get("model", "gpt-3.5-turbo")
+
     with container:
         col1, col2, col3 = st.columns([5, 1, 1], gap="small")
 
@@ -51,26 +51,14 @@ def button_row(st, cid, conversation, selected=False):
                 st.experimental_rerun()
 
         with col2:
-            st.write(
-                """<button id="share-convo-btn">:outbox_tray:</button>""",
-                unsafe_allow_html=True,
+            share_button = st.button(
+                ":outbox_tray:",
+                key=f"share_convo_button_{cid}",
+                disabled=False,
+                use_container_width=True,
             )
-            css = """
-                <style>
-                    #share-convo-btn {
-                        border: 1px solid rgba(49, 51, 63, 0.2);
-                        border-radius: 4px;
-                        background-color: rgb(249, 249, 251);
-                        height: 35px;
-                        width: 35px;
-                    }
-                    #share-convo-btn:hover {
-                        border-color: red;
-                    }
-                </style>
-                """
-
-            st.markdown(css, unsafe_allow_html=True)
+            if share_button:
+                st.session_state["shared_convo_cid"] = cid
 
         with col3:
             delete_button = st.button(
@@ -82,19 +70,6 @@ def button_row(st, cid, conversation, selected=False):
             if delete_button:
                 delete_convo(cid)
                 st.experimental_rerun()
-
-    js = f"""
-        <script>
-            const button = window.parent.document.getElementById("share-convo-btn");
-            const shareUrl = window.parent.location.origin + "/share" + "?cid={cid}&model={model}"
-            window.parent.navigator.clipboard.writeText(shareUrl);
-            button.addEventListener("click", function() {{
-                window.parent.alert("Copied to clipboard! ");
-            }});
-        </script>
-        """
-
-    st.components.v1.html(js)
 
 def get_key_from_params(st, key):
     params = st.experimental_get_query_params()
