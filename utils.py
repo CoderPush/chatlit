@@ -39,9 +39,9 @@ def button_row(st, cid, conversation, selected=False):
     title = conversation.get("title", cid)
     container = st.sidebar.container()
     with container:
-        col1, col2, col3 = st.columns([5, 1, 1])
+        col_1, col_2, col_3 = st.columns([5, 1, 1])
 
-        with col1:
+        with col_1:
             convo_button = st.button(
                 title, key=f"button_{cid}", disabled=selected, use_container_width=True
             )
@@ -49,7 +49,7 @@ def button_row(st, cid, conversation, selected=False):
                 st.session_state["cid"] = cid
                 st.experimental_rerun()
 
-        with col2:
+        with col_2:
             delete_button = st.button(
                 "🗑️",
                 key=f"delete_convo_button_{cid}",
@@ -60,13 +60,15 @@ def button_row(st, cid, conversation, selected=False):
                 delete_convo(cid)
                 st.experimental_rerun()
 
-        with col3:
+        with col_3:
             rename_button = st.button("🖊️", key=f"rename_{cid}", disabled=selected, use_container_width=True)
         
         if rename_button:
-            rename_input = st.text_input("New Conversation Name:", value=title, key=f"rename_input_{cid}")
-            if rename_input:
+            st.text_input("New Conversation Name:", value=title, key=f"rename_input_{cid}")
+            rename_input = st.session_state.get(f"rename_input_{cid}", "")
+            if rename_input != title:
                 update_conversation_name_by_id(cid, rename_input)
+                st.experimental_rerun()
 
 def get_key_from_params(st, key):
     params = st.experimental_get_query_params()
