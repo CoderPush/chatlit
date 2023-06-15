@@ -1,6 +1,7 @@
 from firestore_utils import delete_convo
 from custom_js import render_copy_shared_convo_link
 
+
 def link_button(st, text, path):
     st.write(
         f"""
@@ -56,7 +57,7 @@ def button_row(st, cid, conversation, selected=False):
                 key=f"share_convo_button_{cid}",
                 disabled=False,
                 use_container_width=True,
-                on_click=lambda : render_copy_shared_convo_link(cid),
+                on_click=lambda: render_copy_shared_convo_link(cid),
             )
 
         with col3:

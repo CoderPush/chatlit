@@ -2,9 +2,11 @@ import streamlit as st
 import streamlit.components.v1 as components
 import time
 
+
 def delayed_execution(delay, function):
     time.sleep(delay)
     function()
+
 
 def render_copy_shared_convo_link(shared_cid=None):
     model = st.session_state.get("model", "gpt-3.5-turbo")
@@ -24,8 +26,5 @@ def render_copy_shared_convo_link(shared_cid=None):
                 }});
             </script>
             """
-        
+
         components.html(js, width=0, height=0)
-
-
-

@@ -153,6 +153,7 @@ def main():
     render_sidebar(st.sidebar)
     render_body(st)
 
+
 if __name__ == "__main__":
     main()
     debugger()
