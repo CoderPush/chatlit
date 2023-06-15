@@ -30,7 +30,6 @@ def load_and_store_conversation(st, cid: str):
         st.session_state["conversation"] = conversation
         st.session_state["model"] = get_model_from_conversation(conversation)
 
-
 def controller():
     st.session_state["conversation_expanded"] = True
 
