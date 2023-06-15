@@ -32,6 +32,9 @@ def save_messages_to_firestore(st, usage=None):
 
 
 def render_chat_stream(st):
+    if 'input' not in st.session_state:
+        st.session_state.input = ''
+
     def get_input():
         st.session_state.input = st.session_state.text_area_stream
         st.session_state.text_area_stream = ''
@@ -40,9 +43,10 @@ def render_chat_stream(st):
         # generate response stream here
         stream_holder = st.empty()
 
-        user_input = st.text_area(
-        f"You:", key="text_area_stream", label_visibility="collapsed"
-        )
+        st.text_area(f"You:", 
+                     key="text_area_stream", 
+                     label_visibility="collapsed", 
+                     on_change=get_input)
         submit_holder = st.empty()
         generating = st.session_state.get("generating", False)
         if generating:
@@ -52,14 +56,13 @@ def render_chat_stream(st):
         else:
             submit_button = submit_holder.button(label="Send")
         
-        # print('saved variable:', st.session_state.input)
-
-    if submit_button and user_input:
+    if submit_button or st.session_state.input:
         st.session_state["generating"] = True
         submit_holder.empty()
         st.session_state["conversation_expanded"] = False
-        generate_stream(st, stream_holder, user_input)
+        generate_stream(st, stream_holder, st.session_state.input)
         new_conversation = save_messages_to_firestore(st)
+        st.session_state.input = ''
         st.session_state["generating"] = False
         if new_conversation is not None:
             st.session_state["cid"] = new_conversation.id
