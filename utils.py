@@ -40,7 +40,6 @@ def button_row(st, cid, conversation, selected=False):
     title = conversation.get("title", cid)
     container = st.sidebar.container()
 
-
     with container:
         col1, col2, col3, col4 = st.columns([6, 1, 1, 1], gap="small")
 
