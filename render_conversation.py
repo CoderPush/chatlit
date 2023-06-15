@@ -1,5 +1,6 @@
 from firestore_utils import get_firestore_db
 
+
 def render_messages(st, messages):
     for i, message in enumerate(messages):
         if message.get("role") == "user":
