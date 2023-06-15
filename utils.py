@@ -61,7 +61,7 @@ def button_row(st, cid, conversation, selected=False):
                 st.experimental_rerun()
 
         with col_3:
-            rename_button = st.button("🖊️", key=f"rename_{cid}", disabled=selected, use_container_width=True)
+            rename_button = st.button("🖊️", disabled=selected, use_container_width=True)
         
         if rename_button:
             st.text_input("New Conversation Name:", value=title, key=f"rename_input_{cid}")
