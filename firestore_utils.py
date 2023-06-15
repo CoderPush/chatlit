@@ -64,5 +64,5 @@ def edit_convo(convo_id, new_label):
         document_ref = db.collection("conversations").document(convo_id)
         document_ref.update({"title": new_label})
         print(f"Updated document with ID: {convo_id}")
-    except Exception as e:
-        print(e)
+    except firestore.NotFound as e:
+        print(f"Document with ID {convo_id} not found")

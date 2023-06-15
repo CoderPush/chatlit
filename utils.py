@@ -43,9 +43,9 @@ def button_row(st, cid, conversation, selected=False):
         col1, col2, col3 = st.columns([6, 1, 1], gap="small")
 
         with col1:
-            isEdit = st.session_state.get(f"edit_convo_button_{cid}", False)
+            is_edit = st.session_state.get(f"edit_convo_button_{cid}", False)
 
-            if not isEdit:
+            if not is_edit:
                 convo_button = st.button(
                     title,
                     key=f"button_{cid}",
