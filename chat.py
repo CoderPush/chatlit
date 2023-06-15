@@ -6,7 +6,6 @@ from render_my_conversations import render_my_conversations
 import streamlit as st
 from firestore_utils import clear_user_history
 from utils import get_cid_from_session
-from render_custom_js import render_custom_js
 from debugger import debugger
 from google_utils import sign_out_google, decode_token_from_params
 
@@ -153,8 +152,6 @@ def main():
     controller()
     render_sidebar(st.sidebar)
     render_body(st)
-    render_custom_js()
-
 
 if __name__ == "__main__":
     main()
