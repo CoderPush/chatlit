@@ -1,7 +1,7 @@
 [[source]]
 url = "https://pypi.org/simple"
 verify_ssl = true
-name = "pypi"
+name = "PyPI"
 
 [packages]
 openai = "==0.27.5"
@@ -10,12 +10,12 @@ python-dotenv = "*"
 watchdog = "*"
 google-cloud-firestore = "*"
 firebase-admin = "*"
-streamlit-chat = {editable = true, git = "https://github.com/harley/st-chat.git"}
 streamlit-oauth = "*"
 promptlayer = "*"
+toml = "*"
 
 [dev-packages]
 pre-commit = "*"
 
 [requires]
-python_version = "3.10"
+python_version = "3.11"
