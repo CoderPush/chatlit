@@ -1,6 +1,6 @@
-# ChatLit
+# Chatlit
 
-ChatLit is an open-source web application powered by Streamlit, designed to provide an extensible chat interface with individual chat histories and multiple chat models. This project is licensed under the MIT license.
+Chatlit is an open-source web application powered by Streamlit, designed to provide an extensible chat interface with individual chat histories and multiple chat models. This project is licensed under the MIT license.
 
 ## Getting Started
 
