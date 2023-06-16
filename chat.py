@@ -4,8 +4,6 @@ from render_auth import render_auth
 from render_body import render_body
 from render_my_conversations import render_my_conversations
 import streamlit as st
-import toml
-import os
 from firestore_utils import clear_user_history
 from utils import get_cid_from_session
 import base64
@@ -147,19 +145,6 @@ def render_sidebar(sidebar):
     sidebar.divider()
     render_history_menu(sidebar)
 
-def save_theme_config(theme_config):
-    config_path = "config.toml"
-    if not os.path.exists(config_path):
-        with open(config_path, 'w') as config_file:
-            config_file.write('')
-
-    with open(config_path, "r") as config_file:
-        config_data = toml.load(config_file)
-
-    config_data["theme"] = theme_config
-
-    with open(config_path, "w") as config_file:
-        toml.dump(config_data, config_file)
 
 def main():
     st.set_page_config(
@@ -169,14 +154,6 @@ def main():
     render_sidebar(st.sidebar)
     render_body(st)
 
-    # Add a new button to save theme configuration
-    with st.sidebar.expander("Theme Configuration"):
-        theme_save_btn = st.button("Save Theme Configuration")
-
-        if theme_save_btn:
-            theme_config = {...}  # Replace this with your custom theme configuration
-            save_theme_config(theme_config)
-            st.experimental_rerun()
 
 if __name__ == "__main__":
     main()

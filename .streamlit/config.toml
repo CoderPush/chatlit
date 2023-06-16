@@ -1,10 +1,8 @@
 [browser]
 gatherUsageStats = false
 
-[theme]
-theme_config = {
-    "primaryColor" "#f08a5d",
-    "backgroundColor": "#222222",
-    "secondaryBackgroundColor": "#2C3E50",
-    "textColor": "#ffffff",
-}
+[theme_config]
+    primaryColor9 = "#f08a5d"
+    backgroundColor = "#222222"
+    secondaryBackgroundColor = "#2C3E50"
+    textColor = "#ffffff"
