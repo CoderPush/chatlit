@@ -25,6 +25,7 @@ def link_row(st, text, path, selected=False):
 
     st.write(
         f"""
+        
         <a target="_self" href="{path}" style="display: block; color: inherit; text-decoration: none;" class="{class_name}">
           <div style="width: 100%; height: 100%; transition: background-color 0.3s; padding: 5px;">
           {text}
@@ -47,20 +48,20 @@ def button_row(st, cid, conversation, selected=False):
         with col1:
             is_edit = st.session_state.get(f"edit_convo_button_{cid}", False)
 
-            if not is_edit:
-                convo_button = st.button(
-                    title,
-                    key=f"title_button_{cid}",
-                    disabled=selected,
-                    use_container_width = True
-                )
-            else:
+            if is_edit:
                 st.text_input(
                     "Edit Label",
                     title,
                     key=f"new_title_{cid}",
                     max_chars=30,
                     label_visibility="collapsed",
+                )
+            else:
+                convo_button = st.button(
+                    title,
+                    key=f"title_button_{cid}",
+                    disabled=selected,
+                    use_container_width = True
                 )
 
             new_title = st.session_state.get(f"new_title_{cid}", "")
