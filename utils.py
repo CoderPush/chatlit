@@ -79,7 +79,6 @@ def button_row(st, cid, conversation, selected=False):
                     use_container_width=True,
                     on_click=lambda: render_copy_shared_convo_link(cid),
                 )
-
             with col3:
                 st.button(
                     ":pencil2:",
@@ -87,7 +86,6 @@ def button_row(st, cid, conversation, selected=False):
                     disabled=selected,
                     use_container_width=True,
                 )
-
             with col4:
                 delete_button = st.button(
                     ":wastebasket:",
