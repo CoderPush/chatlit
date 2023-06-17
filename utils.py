@@ -25,7 +25,6 @@ def link_row(st, text, path, selected=False):
 
     st.write(
         f"""
-
         <a target="_self" href="{path}" style="display: block; color: inherit; text-decoration: none;" class="{class_name}">
           <div style="width: 100%; height: 100%; transition: background-color 0.3s; padding: 5px;">
           {text}
