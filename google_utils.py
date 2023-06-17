@@ -71,7 +71,17 @@ def auth_with_google(st):
             token = result["token"]
             st.session_state["token"] = token
             base64_token = dict_to_base64(token)
-            st.experimental_set_query_params(token=base64_token)
+            other_queries = st.experimental_get_query_params()
+            if "cid" in other_queries and "model" in other_queries:
+                cid = other_queries["cid"][0]
+                model = other_queries["model"][0]
+                st.experimental_set_query_params(
+                    token=base64_token,
+                    cid=cid,
+                    model=model,
+                )
+            else:
+                st.experimental_set_query_params(token=base64_token)
             sign_in_holder.empty()
     else:
         token = st.session_state["token"]
