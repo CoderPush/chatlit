@@ -54,7 +54,6 @@ def button_row(st, cid, conversation, selected=False):
                     disabled=selected,
                     use_container_width = True
                 )
-                
             else:
                 st.text_input(
                     "Edit Label",
@@ -99,7 +98,6 @@ def button_row(st, cid, conversation, selected=False):
                 if is_delete:
                     delete_convo(cid)
                     st.experimental_rerun()
-        
         else:
             with col4:
                 open_button = st.button("📂", key=f"open_convo{cid}", use_container_width = True)
