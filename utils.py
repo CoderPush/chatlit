@@ -61,7 +61,7 @@ def button_row(st, cid, conversation, selected=False):
                     title,
                     key=f"title_button_{cid}",
                     disabled=selected,
-                    use_container_width = True
+                    use_container_width=True,
                 )
 
             new_title = st.session_state.get(f"new_title_{cid}", "")
@@ -69,7 +69,7 @@ def button_row(st, cid, conversation, selected=False):
                 edit_convo(cid, new_label=new_title)
                 st.session_state[f"new_title_{cid}"] = ""
                 st.experimental_rerun()
-        
+
         if is_edit_mode:
             with col2:
                 st.button(
@@ -101,7 +101,9 @@ def button_row(st, cid, conversation, selected=False):
                     st.experimental_rerun()
         else:
             with col4:
-                open_button = st.button("📂", key=f"open_convo{cid}", use_container_width = True)
+                open_button = st.button(
+                    "📂", key=f"open_convo{cid}", use_container_width=True
+                )
                 if open_button:
                     st.session_state["cid"] = cid
                     st.experimental_rerun()
