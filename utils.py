@@ -53,11 +53,8 @@ def button_row(st, cid, conversation, selected=False):
                     title,
                     key=f"title_button_{cid}",
                     disabled=selected,
-                    use_container_width=True,
+                    use_container_width = True
                 )
-                if convo_button and not is_edit_mode:
-                    st.session_state["cid"] = cid
-                    st.experimental_rerun()
             else:
                 st.text_input(
                     "Edit Label",
@@ -72,9 +69,9 @@ def button_row(st, cid, conversation, selected=False):
                 edit_convo(cid, new_label=new_title)
                 st.session_state[f"new_title_{cid}"] = ""
                 st.experimental_rerun()
-
-        with col2:
-            if is_edit_mode:
+        
+        if is_edit_mode:
+            with col2:
                 st.button(
                     ":outbox_tray:",
                     key=f"share_convo_button_{cid}",
@@ -83,8 +80,7 @@ def button_row(st, cid, conversation, selected=False):
                     on_click=lambda: render_copy_shared_convo_link(cid),
                 )
 
-        with col3:
-            if is_edit_mode:
+            with col3:
                 st.button(
                     ":pencil2:",
                     key=f"edit_convo_button_{cid}",
@@ -92,18 +88,24 @@ def button_row(st, cid, conversation, selected=False):
                     use_container_width=True,
                 )
 
-        with col4:
-            if is_edit_mode:
+            with col4:
                 delete_button = st.button(
                     ":wastebasket:",
                     key=f"delete_convo_button_{cid}",
                     disabled=selected,
                     use_container_width=True,
                 )
-            is_delete = st.session_state.get(f"delete_convo_button_{cid}", False)
-            if is_delete:
-                delete_convo(cid)
-                st.experimental_rerun()
+                is_delete = st.session_state.get(f"delete_convo_button_{cid}", False)
+                if is_delete:
+                    delete_convo(cid)
+                    st.experimental_rerun()
+        
+        else:
+            with col4:
+                open_button = st.button("📂", key=f"open_convo{cid}", use_container_width = True)
+                if open_button:
+                    st.session_state["cid"] = cid
+                    st.experimental_rerun()
 
     css = """
         <style>
