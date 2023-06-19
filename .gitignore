@@ -181,5 +181,5 @@ pyrightconfig.json
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
-
+.idea
 creds/*
