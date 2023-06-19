@@ -1,3 +1,5 @@
 [browser]
 gatherUsageStats = false
 
+[session]
+session_timeout = 21600 #6 hours (6*60*60)
