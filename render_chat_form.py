@@ -56,6 +56,16 @@ def render_chat_stream(st):
         else:
             submit_button = submit_holder.button(label="Send")
 
+    styles = f"""
+    <style>
+        .stTextArea {{
+            position: fixed;
+            bottom: 2rem;
+        }}
+    </style>
+    """
+    st.markdown(styles, unsafe_allow_html=True)
+
     if submit_button or st.session_state["chat_form_user_input"]:
         st.session_state["generating"] = True
         submit_holder.empty()
