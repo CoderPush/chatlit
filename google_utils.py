@@ -86,8 +86,6 @@ def auth_with_google(st):
     else:
         token = st.session_state["token"]
         expires_at = token.get("expires_at")
-        print(token)
-        print(expires_at)
         if expires_at and expires_at < time.time():
             try:
                 token = oauth2.refresh_token(token)

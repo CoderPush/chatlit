@@ -81,7 +81,7 @@ def render_new_chat(sidebar):
         if model_type == "gpt-4":
             FEEDBACK_TEXT = "Share Your Feedback with Us!!!"
             FEEDBACK_LINK = "https://coda.io/form/PusherGPT-Quick-Like-Wish_dWWuBv7G80O"
-            styled_text = f"<p style='text-align: center;'><a href='{FEEDBACK_LINK}' target='_blank' style='color: red; text-decoration: none;'>{FEEDBACK_TEXT}</a></p>"
+            styled_text = f"<p style='text-align: center;'><a href='{FEEDBACK_LINK}' target='_blank' style='color: red; text-decoration: none;'>" f"{FEEDBACK_TEXT}</a></p>"
             sidebar.markdown(styled_text, unsafe_allow_html=True)
 
 
