@@ -58,7 +58,10 @@ DEFAULT_CONVERSATION = {}
 
 
 def render_new_chat(sidebar):
-    button_models = {"GPT-3.5 Chat": "gpt-3.5-turbo", "GPT-4 Chat": "gpt-4"}
+    button_models = {
+        "GPT-3.5 Chat": "gpt-3.5-turbo",
+        "GPT-4 Chat": "gpt-4"
+    }
     for button_text, model_type in button_models.items():
         # if model in session_state is the same as the button, prefix button_text with a checked emoji
         if st.session_state.get("model") == model_type:
@@ -74,6 +77,12 @@ def render_new_chat(sidebar):
             type=button_type,
         ):
             reinitialize_chat(model_type)
+
+        if model_type == "gpt-4":
+            FEEDBACK_TEXT = "Share Your Feedback with Us!!!"
+            FEEDBACK_LINK = "https://coda.io/form/PusherGPT-Quick-Like-Wish_dWWuBv7G80O"
+            styled_text = f"<p style='text-align: center;'><a href='{FEEDBACK_LINK}' target='_blank' style='color: red; text-decoration: none;'>{FEEDBACK_TEXT}</a></p>"
+            sidebar.markdown(styled_text, unsafe_allow_html=True)
 
 
 def reinitialize_chat(model: str):
