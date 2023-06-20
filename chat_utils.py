@@ -3,7 +3,7 @@ import promptlayer
 import openai as openai_orig
 import openai_mock
 
-env = os.getenv("APP_ENV", "dev")
+env = os.environ.get("APP_DEV")
 
 if env == "dev":
     openai = openai_mock.MockOpenAI
@@ -38,7 +38,7 @@ def generate_stream(st, holder, user_input):
 
     print("openai.ChatCompletion.create with", openai, model, messages)
     completion = openai.ChatCompletion.create(
-        model=model, messages=messages, stream=True, pl_tags=[model]
+        model=model, messages=messages, stream=True
     )
 
     # first chunk should be
