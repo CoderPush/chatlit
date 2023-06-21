@@ -12,6 +12,7 @@ def render_user_message(st, message, profile_url):
     """
     st.markdown(user_message, unsafe_allow_html=True)
 
+
 def render_messages(st, messages):
     user_picture_url = st.session_state.get("user_info", {}).get("picture", None)
     for i, message in enumerate(messages):
