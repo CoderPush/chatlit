@@ -48,20 +48,24 @@ def button_row(st, cid, conversation, selected=False):
         with col1:
             is_edit = st.session_state.get(f"edit_convo_button_{cid}", False)
 
-            if is_edit:
+            if not is_edit:
+                convo_button = st.button(
+                    title,
+                    key=f"title_button_{cid}",
+                    disabled=selected,
+                    use_container_width=True,
+                )
+                if convo_button:
+                    st.session_state["cid"] = cid
+                    #st.experimental_rerun()
+
+            else:
                 st.text_input(
                     "Edit Label",
                     title,
                     key=f"new_title_{cid}",
                     max_chars=30,
                     label_visibility="collapsed",
-                )
-            else:
-                convo_button = st.button(
-                    title,
-                    key=f"title_button_{cid}",
-                    disabled=selected,
-                    use_container_width=True,
                 )
 
             new_title = st.session_state.get(f"new_title_{cid}", "")
@@ -99,14 +103,14 @@ def button_row(st, cid, conversation, selected=False):
                 if is_delete:
                     delete_convo(cid)
                     st.experimental_rerun()
-        else:
-            with col4:
-                open_button = st.button(
-                    "📂", key=f"open_convo{cid}", use_container_width=True
-                )
-                if open_button:
-                    st.session_state["cid"] = cid
-                    st.experimental_rerun()
+        # else:
+        #     with col4:
+        #         open_button = st.button(
+        #             "📂", key=f"open_convo{cid}", use_container_width=True
+        #         )
+        #         if open_button:
+        #             st.session_state["cid"] = cid
+        #             st.experimental_rerun()
 
     css = """
         <style>
