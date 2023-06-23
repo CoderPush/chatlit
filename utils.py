@@ -52,7 +52,6 @@ def button_row(st, cid, conversation, selected):
                 if convo_button:
                         st.session_state["cid"] = cid
                         st.experimental_rerun()
-        
         else:
             with col1:
                 is_edit = st.session_state.get(f"edit_convo_button_{cid}", False)
