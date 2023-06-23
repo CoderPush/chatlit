@@ -36,45 +36,47 @@ def link_row(st, text, path, selected=False):
     )
 
 
-def button_row(st, cid, conversation, selected=False):
+def button_row(st, cid, conversation, selected):
     title = conversation.get("title", cid)
     container = st.sidebar.container()
-
     with container:
         col1, col2, col3, col4 = st.columns([6, 1, 1, 1], gap="small")
-        is_edit_mode = st.session_state.get(f"title_button_{cid}", False)
-        is_edit = st.session_state.get(f"edit_convo_button_{cid}", False)
-
-        with col1:
-            is_edit = st.session_state.get(f"edit_convo_button_{cid}", False)
-
-            if not is_edit:
+        if selected == False:
+            with col1:
                 convo_button = st.button(
-                    title,
-                    key=f"title_button_{cid}",
-                    disabled=selected,
-                    use_container_width=True,
-                )
+                            title,
+                            key=f"title_button_{cid}",
+                            disabled=False,
+                            use_container_width=True,
+                        )
                 if convo_button:
-                    st.session_state["cid"] = cid
-                    #st.experimental_rerun()
+                        st.session_state["cid"] = cid
+                        st.experimental_rerun()
+        
+        else:
+            with col1:
+                is_edit = st.session_state.get(f"edit_convo_button_{cid}", False)
+                if not is_edit:
+                    convo_button = st.button(
+                                title,
+                                key=f"title_button_{cid}",
+                                disabled=selected,
+                                use_container_width=True,
+                            )
+                else:
+                    st.text_input(
+                            "Edit Label",
+                            title,
+                            key=f"new_title_{cid}",
+                            max_chars=30,
+                            label_visibility="collapsed",
+                        )
+                    new_title = st.session_state.get(f"new_title_{cid}", "")
+                    if new_title and new_title != title:
+                        edit_convo(cid, new_label=new_title)
+                        st.session_state[f"new_title_{cid}"] = ""
+                        st.experimental_rerun()
 
-            else:
-                st.text_input(
-                    "Edit Label",
-                    title,
-                    key=f"new_title_{cid}",
-                    max_chars=30,
-                    label_visibility="collapsed",
-                )
-
-            new_title = st.session_state.get(f"new_title_{cid}", "")
-            if new_title and new_title != title:
-                edit_convo(cid, new_label=new_title)
-                st.session_state[f"new_title_{cid}"] = ""
-                st.experimental_rerun()
-
-        if is_edit_mode:
             with col2:
                 st.button(
                     ":outbox_tray:",
@@ -88,7 +90,7 @@ def button_row(st, cid, conversation, selected=False):
                 st.button(
                     ":pencil2:",
                     key=f"edit_convo_button_{cid}",
-                    disabled=selected,
+                    disabled=False,
                     use_container_width=True,
                 )
 
@@ -96,21 +98,13 @@ def button_row(st, cid, conversation, selected=False):
                 delete_button = st.button(
                     ":wastebasket:",
                     key=f"delete_convo_button_{cid}",
-                    disabled=selected,
+                    disabled=False,
                     use_container_width=True,
                 )
                 is_delete = st.session_state.get(f"delete_convo_button_{cid}", False)
                 if is_delete:
                     delete_convo(cid)
                     st.experimental_rerun()
-        # else:
-        #     with col4:
-        #         open_button = st.button(
-        #             "📂", key=f"open_convo{cid}", use_container_width=True
-        #         )
-        #         if open_button:
-        #             st.session_state["cid"] = cid
-        #             st.experimental_rerun()
 
     css = """
         <style>
@@ -159,7 +153,6 @@ def button_row(st, cid, conversation, selected=False):
         """
 
     st.sidebar.markdown(css, unsafe_allow_html=True)
-
 
 def get_key_from_params(st, key):
     params = st.experimental_get_query_params()
