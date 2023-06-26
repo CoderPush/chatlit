@@ -1,26 +1,35 @@
 from firestore_utils import get_firestore_db
 
 
-def render_user_message(st, message, profile_url):
-    user_message = f"""
-        <div role="alert" data-baseweb="notification" class="st-ae st-af st-ag st-ah st-ai st-aj st-ak st-ee st-am st-ed st-an st-ao st-ap st-aq st-ar st-as st-ef st-au st-av st-aw st-ax st-ay st-bb st-b0 st-b1 st-b2 st-b3 st-b4 st-b5 st-b6 st-b7"><div class="st-b8 st-b9"><div class="css-17z2rne e13vu3m50"><div class="css-1w6rlcb e12sa3f30">
-            <img src={profile_url} width=32 height=32 alt="Profile Picture">
-            <div data-testid="stMarkdownContainer" class="css-nahz7x e16nr0p34">
-                <p>{message}</p>
+def render_message(st, message, profile_url, role):
+    user_message = ""
+    if role == "user":
+        user_message = f"""
+            <div style="width: 80%; display:flex; justify-content: flex-end; margin-left: auto; background-color: rgba(146, 108, 5, 0.1); margin-bottom: 20px; border-radius: 4px; padding: 10px">
+                <div style="margin-right: 10px"><p>{message}</p></div>
+                <img src={profile_url} width=32 height=32 alt="Profile Picture">
             </div>
-        </div></div></div></div>
-    """
+        """
+    elif role == "assistant":
+        user_message = f"""
+            <div style="width: 80%; display:flex; background-color: rgba(28, 131, 225, 0.1); margin-bottom: 20px; border-radius: 4px; padding: 10px">
+                <div style="width: 32px; height: 32px">🤖</div>
+                <div style="margin-left: 10px"><p>{message}</p></div>
+            </div>
+        """
+
     st.markdown(user_message, unsafe_allow_html=True)
 
 
 def render_messages(st, messages):
     user_picture_url = st.session_state.get("user_info", {}).get("picture", None)
-    for i, message in enumerate(messages):
+    
+    for _, message in enumerate(messages):
         message_content = message.get("content")
         if message.get("role") == "user":
-            render_user_message(st, message_content, user_picture_url)
+            render_message(st, message_content, user_picture_url, "user")
         elif message.get("role") == "assistant":
-            st.info(message.get("content"), icon="🤖")
+            render_message(st, message_content, "", "assistant")
         elif message.get("role") == "system":
             # don't render system messages
             pass
