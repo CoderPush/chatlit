@@ -23,7 +23,7 @@ def render_message(st, message, profile_url, role):
 
 def render_messages(st, messages):
     user_picture_url = st.session_state.get("user_info", {}).get("picture", None)
-    
+
     for _, message in enumerate(messages):
         message_content = message.get("content")
         if message.get("role") == "user":
