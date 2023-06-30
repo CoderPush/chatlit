@@ -2,6 +2,7 @@ from firestore_utils import delete_convo, edit_convo
 from custom_js import render_copy_shared_convo_link
 from constants import DEFAULT_CONVERSATION
 
+
 def link_button(st, text, path):
     st.write(
         f"""
@@ -39,11 +40,11 @@ def link_row(st, text, path, selected=False):
 def button_row(st, cid, conversation, selected=False):
     title = conversation.get("title", cid)
     container = st.sidebar.container()
-    
-    if 'title_button' not in st.session_state:
-        st.session_state['title_button'] = {}
-    if cid not in st.session_state['title_button']:
-        st.session_state['title_button'][cid] = False
+
+    if "title_button" not in st.session_state:
+        st.session_state["title_button"] = {}
+    if cid not in st.session_state["title_button"]:
+        st.session_state["title_button"][cid] = False
 
     with container:
         col1, col2, col3, col4 = st.columns([6, 1, 1, 1], gap="small")
@@ -81,7 +82,7 @@ def button_row(st, cid, conversation, selected=False):
                 st.session_state[f"new_title_{cid}"] = ""
                 st.experimental_rerun()
 
-        if st.session_state['title_button'][cid]:
+        if st.session_state["title_button"][cid]:
             with col2:
                 st.button(
                     ":outbox_tray:",
