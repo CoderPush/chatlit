@@ -5,6 +5,7 @@ import json
 import streamlit as st
 
 
+
 @st.cache_resource
 def get_firestore_db():
     json_content = decode_firestore_credentials()
@@ -18,7 +19,7 @@ def load_conversation_by_id(cid):
         return db.collection("conversations").document(cid).get()
 
 
-def firestore_save(cid, conversation_record):
+def     firestore_save(cid, conversation_record):
     db = get_firestore_db()
     if cid:
         # get conversation fromm cid
@@ -66,3 +67,30 @@ def edit_convo(convo_id, new_label):
         print(f"Updated document with ID: {convo_id}")
     except firestore.NotFound as e:
         print(f"Document with ID {convo_id} not found")
+
+def firestore_create_new_bot(bot_info):
+    db = get_firestore_db()
+    bot_info_ref = db.collection("bots")
+    bot_info["created"] = firestore.SERVER_TIMESTAMP
+    _, record = bot_info_ref.add(bot_info)
+
+    return record
+
+def firestore_get_all_bots():
+    db = get_firestore_db()
+    bots = (
+            db.collection("bots")
+            .stream()
+        )
+
+    return bots
+
+def firestore_delete_all_bots():
+    db = get_firestore_db()
+    bots = (
+            db.collection("bots")
+            .stream()
+        )
+
+    for bot in bots:
+        bot.reference.delete()
