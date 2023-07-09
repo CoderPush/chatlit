@@ -8,6 +8,7 @@ from firestore_utils import clear_user_history
 from utils import get_cid_from_session
 from debugger import debugger
 from google_utils import sign_out_google, decode_token_from_params
+from constants import DEFAULT_CONVERSATION
 
 from dotenv import load_dotenv
 
@@ -52,9 +53,6 @@ def controller():
     # set default model if no model specified
     if "model" not in st.session_state:
         st.session_state["model"] = DEFAULT_MODEL
-
-
-DEFAULT_CONVERSATION = {}
 
 
 def render_new_chat(sidebar):
