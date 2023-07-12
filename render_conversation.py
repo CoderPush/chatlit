@@ -14,7 +14,7 @@ def render_message(st, message, profile_url, role):
         user_message = f"""
             <div style="width: 80%; display:flex; background-color: rgba(28, 131, 225, 0.1); margin-bottom: 20px; border-radius: 4px; padding: 10px">
                 <div style="width: 32px; height: 32px">🤖</div>
-                <div style="margin-left: 10px"><p>{message}</p></div>
+                <div style="margin-left: 10px; overflow: auto; max-width: 100%">{message}</div>
             </div>
         """
 
