@@ -2,19 +2,29 @@ from firestore_utils import get_firestore_db
 
 
 def render_message(st, message, profile_url, role):
+    css = """
+        <style>
+            .conversation-message img {
+                max-width: 100%;
+            }
+        </style>
+        """
+
+    st.markdown(css, unsafe_allow_html=True)
+
     user_message = ""
     if role == "user":
         user_message = f"""
             <div style="width: 80%; display:flex; justify-content: flex-end; margin-left: auto; background-color: rgba(146, 108, 5, 0.1); margin-bottom: 20px; border-radius: 4px; padding: 10px">
-                <div style="margin-right: 10px"><p>{message}</p></div>
-                <img src={profile_url} width=32 height=32 alt="Profile Picture">
+                <div class="conversation-message" style="margin-right: 10px; overflow: auto; max-width: 100%"><p>{message}</p></div>
+                <div style="max-width: 15%"><img src={profile_url} width=32 height=32 alt="Profile Picture" style="display: block"></div>
             </div>
         """
     elif role == "assistant":
         user_message = f"""
             <div style="width: 80%; display:flex; background-color: rgba(28, 131, 225, 0.1); margin-bottom: 20px; border-radius: 4px; padding: 10px">
-                <div style="width: 32px; height: 32px">🤖</div>
-                <div style="margin-left: 10px"><p>{message}</p></div>
+                <div style="display: block; width: 32px; height: 32px">🤖</div>
+                <div class="conversation-message" style="margin-left: 10px; overflow: auto; max-width: 100%">{message}</div>
             </div>
         """
 
