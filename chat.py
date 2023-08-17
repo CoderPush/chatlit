@@ -73,6 +73,19 @@ def render_new_chat(sidebar):
         ):
             reinitialize_chat(model_type)
 
+        if model_type == "gpt-4":
+            render_feedback_link(sidebar)
+
+
+def render_feedback_link(sidebar):
+    feedback_text = "Share Your Feedback with Us!!!"
+    feedback_link = "https://coda.io/form/PusherGPT-Quick-Like-Wish_dWWuBv7G80O"
+    styled_text = (
+        f"<p style='text-align: center;'><a href='{feedback_link}' target='_blank' style='color: red; text-decoration: none;'>"
+        f"{feedback_text}</a></p>"
+    )
+    sidebar.markdown(styled_text, unsafe_allow_html=True)
+
 
 def reinitialize_chat(model: str):
     st.session_state["conversation"] = DEFAULT_CONVERSATION
