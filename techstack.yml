@@ -1,0 +1,131 @@
+repo_name: CoderPush/chatlit
+report_id: ed160e0b6218b4dbbd6794034797581e
+repo_type: Public
+timestamp: '2023-11-10T08:10:55+00:00'
+requested_by: huyenNguyen20
+provider: github
+branch: main
+detected_tools_count: 10
+tools:
+- name: Python
+  description: A clear and powerful object-oriented programming language, comparable
+    to Perl, Ruby, Scheme, or Java.
+  website_url: https://www.python.org
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/993/pUBY5pVj.png
+  detection_source: Repo Metadata
+- name: Docker
+  description: Enterprise Container Platform for High-Velocity Innovation.
+  website_url: https://www.docker.com/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Virtual Machine Platforms & Containers
+  image_url: https://img.stackshare.io/service/586/n4u37v9t_400x400.png
+  detection_source: Repo Metadata
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source: Repo Metadata
+- name: GitHub Actions
+  description: Automate your workflow from idea to production
+  website_url: https://github.com/features/actions
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/11563/actions.png
+  detection_source: ".github/workflows/eb-deploy.yml"
+  last_updated_by: Harley Trung
+  last_updated_on: 2023-05-17 16:29:37.000000000 Z
+- name: PyPI
+  description: A repository of software for the Python programming language
+  website_url: https://pypi.org/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Hosted Package Repository
+  image_url: https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg
+  detection_source: Pipfile
+  last_updated_by: Harley Trung
+  last_updated_on: 2023-05-16 09:10:31.000000000 Z
+- name: firebase-admin
+  description: Firebase Admin Python SDK
+  package_url: https://pypi.org/firebase-admin
+  version: 6.1.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20517/default_35c96ceb69f6db523362c5b30e575b2d4ddfcab3.png
+  detection_source_url: Pipfile.lock
+  detection_source: Pipfile
+  last_updated_by: Harley Trung
+  last_updated_on: 2023-05-17 16:20:12.000000000 Z
+- name: google-cloud-firestore
+  description: Google Cloud Firestore API client library
+  package_url: https://pypi.org/google-cloud-firestore
+  version: 2.11.1
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20487/default_13373c456cf04faa5b7f33cd4c4095cbd571dfce.png
+  detection_source_url: Pipfile.lock
+  detection_source: Pipfile
+  last_updated_by: Harley Trung
+  last_updated_on: 2023-05-17 16:20:12.000000000 Z
+- name: pre-commit
+  description: A framework for managing and maintaining multi-language pre-commit
+    hooks
+  package_url: https://pypi.org/pre-commit
+  version: 3.3.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20560/default_d975dcf643a054134f39226d51d4a5fea9320efe.png
+  detection_source_url: Pipfile.lock
+  detection_source: Pipfile
+  last_updated_by: Harley Trung
+  last_updated_on: 2023-05-17 16:29:37.000000000 Z
+- name: python-dotenv
+  description: Add .env support to your django/flask apps in development and deployments
+  package_url: https://pypi.org/python-dotenv
+  version: 1.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20095/default_3141eabecdd8efa55de73a33c43f2ac0d5bbf954.png
+  detection_source_url: Pipfile.lock
+  detection_source: Pipfile
+  last_updated_by: Harley Trung
+  last_updated_on: 2023-05-16 09:10:31.000000000 Z
+- name: watchdog
+  description: Filesystem events monitoring
+  package_url: https://pypi.org/watchdog
+  version: 3.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19927/default_bb29140b72c0fb9789e567bba0ef0ffadeaef5d4.png
+  detection_source_url: Pipfile.lock
+  detection_source: Pipfile
+  last_updated_by: Harley Trung
+  last_updated_on: 2023-05-16 09:10:31.000000000 Z
